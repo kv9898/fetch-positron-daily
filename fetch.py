@@ -9,7 +9,7 @@ CURRENT_VERSION: int = int(os.getenv("CURRENT_VERSION"))
 
 
 def url(number: int):
-    return f"https://cdn.posit.co/positron/dailies/win/x86_64/Positron-2025.{CURRENT_MONTH}.0-{number}-Setup.exe"
+    return f"https://cdn.posit.co/positron/dailies/win/x86_64/Positron-2025.{CURRENT_MONTH}.0-{number}-Setup-x64.exe"
 
 
 class bcolors:
