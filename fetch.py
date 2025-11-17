@@ -6,8 +6,8 @@ from datetime import date
 
 load_dotenv()
 # compute default as previous month (wrap to 12 if current month is January)
-today = date.today()
-default_month = today.month - 1 if today.month > 1 else 12
+today: date = date.today()
+default_month: int = today.month - 1 if today.month > 1 else 12
 CURRENT_MONTH: str = os.getenv("CURRENT_MONTH", str(default_month))
 CURRENT_VERSION: int = int(os.getenv("CURRENT_VERSION", "0")) # pyrefly: ignore
 
