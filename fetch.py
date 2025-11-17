@@ -2,10 +2,14 @@ import requests
 import os
 from dotenv import load_dotenv, set_key
 from typing import Optional
+from datetime import date
 
 load_dotenv()
-CURRENT_MONTH: str = os.getenv("CURRENT_MONTH")
-CURRENT_VERSION: int = int(os.getenv("CURRENT_VERSION"))
+# compute default as previous month (wrap to 12 if current month is January)
+today = date.today()
+default_month = today.month - 1 if today.month > 1 else 12
+CURRENT_MONTH: str = os.getenv("CURRENT_MONTH", str(default_month))
+CURRENT_VERSION: int = int(os.getenv("CURRENT_VERSION", "0")) # pyrefly: ignore
 
 
 def url(number: int):
@@ -27,6 +31,7 @@ def check_downloadable(url: str) -> int:
         return response.status_code
     except requests.exceptions.RequestException as e:
         print(f"An error occurred: {e}")
+        return -1
 
 
 def main():
