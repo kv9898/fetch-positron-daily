@@ -41,7 +41,7 @@ def main():
             match check_downloadable(url(i)):
                 case 200:
                     latest_version = i
-                    print(bcolors.OKGREEN + f"{i}: downloadable!" + bcolors.ENDC)
+                    print(bcolors.OKGREEN + f"{i}: downloadable: {url(i)}" + bcolors.ENDC)
                 case 404 | 403:
                     print(f"{i}: not downloadable.")
                 case _:
