@@ -82,7 +82,7 @@ def main():
     print("Fetching version tags from GitHub...")
     tag_versions = fetch_latest_versions()
 
-    if tag_versions:
+    if not tag_versions:
         raise ConnectionError("No versions found from GitHub tags. Exiting...")
 
     start_build = determine_start_build(history, current_month)
