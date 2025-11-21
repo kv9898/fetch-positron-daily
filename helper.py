@@ -1,4 +1,3 @@
-from types import Version
 import csv
 import requests
 from pathlib import Path
@@ -6,7 +5,7 @@ from typing import Optional, List
 from datetime import datetime, timezone
 
 from config import MAX_HISTORY_ROWS, FALLBACK_START_VERSION
-from types import DailyRecord
+from cusTypes import DailyRecord, Version
 
 
 def url(version: Version) -> str:
