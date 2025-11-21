@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Optional, List
 from datetime import datetime, timezone
 
-from config import MAX_HISTORY_ROWS, FALLBACK_START_VERSION
+from config import MAX_HISTORY_ROWS
 from cusTypes import DailyRecord, Version, Platform
 
 
@@ -123,12 +123,3 @@ def build_record(year: int, month: int, build_number: int) -> DailyRecord:
         version=Version(year, month, build_number),
         fetched_at=timestamp,
     )
-
-
-def determine_start_build(history: List[DailyRecord], month: int) -> int:
-    monthly_latest = latest_for_month(history, month)
-    if monthly_latest:
-        return monthly_latest["version"].number + 1
-    if history:
-        return 0
-    return FALLBACK_START_VERSION

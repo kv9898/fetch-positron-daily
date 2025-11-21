@@ -8,13 +8,12 @@ from helper import (
     load_history,
     save_history,
     trim_history,
-    determine_start_build,
     check_downloadable,
     build_record,
     url,
     bcolors,
 )
-from config import CSV_PATH, FALLBACK_YEAR, FALLBACK_MONTH, SCAN_WINDOW
+from config import CSV_PATH
 from cusTypes import Version, Platform
 from git import fetch_latest_versions
 
