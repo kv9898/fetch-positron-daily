@@ -30,8 +30,8 @@ This repository tracks available Positron daily builds.
 
 Last updated: {current_time}
 
-| Version | Month | Build Number | Download Link |
-|---------|-------|--------------|---------------|
+| Version | Download Link |
+|---------|---------------|
 """
 
     if not history:
@@ -39,8 +39,8 @@ Last updated: {current_time}
     else:
         for record in reversed(sort_history(history)):
             readme_content += (
-                f"| {record['version']} | {record['month']} | {record['build_number']} | "
-                f"[Download]({record['download_url']}) |\n"
+                f"| {record['version']} | "
+                f"[Download]({url(record['version'])}) |\n"
             )
 
     readme_content += "\n## About\n\n"
