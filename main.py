@@ -15,6 +15,7 @@ from helper import (
 )
 from config import CSV_PATH, FALLBACK_YEAR, FALLBACK_MONTH, SCAN_WINDOW
 from cusTypes import Version, Platform
+from git import fetch_latest_versions
 
 
 def generate_row(version: Version) -> str:
