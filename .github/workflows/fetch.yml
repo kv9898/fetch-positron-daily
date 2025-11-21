@@ -25,31 +25,17 @@ jobs:
     - name: Install the latest version of uv
       uses: astral-sh/setup-uv@v6
 
-    - name: Ensure scraping branch exists
-      run: |
-        git fetch origin
-        if ! git show-ref --quiet refs/remotes/origin/scraping; then
-          git checkout -b scraping origin/main
-          git push -u origin scraping
-        else
-          git checkout scraping
-          git pull origin scraping
-        fi
-
     - name: Sync environment with uv
       run: uv sync
 
-    - name: Load .env
-      uses: c-py/action-dotenv-to-setenv@v5
-
-    - name: Run scraper
-      run: uv run src/main.py
+    - name: Run fetcher
+      run: uv run main.py
 
     - name: Commit changes
       run: |
         git config user.name "github-actions"
         git config user.email "github-actions@github.com"
         git add -A
-        DATE_CN=$(TZ=Asia/Shanghai date +'%Y-%m-%d')
-        git commit -m "🔄 Auto-scrape update on $DATE_CN" || echo "No changes"
-        git push origin scraping
+        DATE_UTC=$(date -u +'%Y-%m-%d')
+        git commit -m "🔄 Auto-fetch update on $DATE_UTC" || echo "No changes"
+        git push origin main
