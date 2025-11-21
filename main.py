@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import List
 from datetime import datetime, timezone
 
 from helper import (
@@ -13,7 +13,8 @@ from helper import (
     url,
     bcolors,
 )
-from config import CSV_PATH, FALLBACK_MONTH, SCAN_WINDOW
+from config import CSV_PATH, FALLBACK_YEAR, FALLBACK_MONTH, SCAN_WINDOW
+from cusTypes import Version
 
 # compute default as previous month (wrap to 12 if current month is January)
 
@@ -65,21 +66,24 @@ def main():
     # determine the current month from the latest CSV record if present,
     # otherwise fall back to the configured default month
     if history:
-        current_month: str = str(history[-1]["month"])
+        current_year = history[-1]["version"].year
+        current_month = history[-1]["version"].month
     else:
+        current_year = FALLBACK_YEAR
         current_month = FALLBACK_MONTH
 
     start_build = determine_start_build(history, current_month)
-    latest_version: Optional[int] = None
+    latest_version: Version | None = None
     new_records: List[DailyRecord] = []
 
     try:
         for build_number in range(start_build, start_build + SCAN_WINDOW):
-            build_url = url(build_number, current_month)
+            version = Version(current_year, current_month, build_number)
+            build_url = url(version)
             match check_downloadable(build_url):
                 case 200:
-                    latest_version = build_number
-                    record = build_record(current_month, build_number, build_url)
+                    latest_version = version
+                    record = build_record(current_year, current_month, build_number)
                     history.append(record)
                     new_records.append(record)
                     print(
