@@ -9,8 +9,8 @@ from config import MAX_HISTORY_ROWS, FALLBACK_START_VERSION
 from types import DailyRecord
 
 
-def url(version: str) -> str:
-    return f"https://cdn.posit.co/positron/dailies/win/x86_64/Positron-2025.{version}-Setup-x64.exe"
+def url(version: Version) -> str:
+    return f"https://cdn.posit.co/positron/dailies/win/x86_64/Positron-{str(version)}-Setup-x64.exe"
 
 
 class bcolors:
