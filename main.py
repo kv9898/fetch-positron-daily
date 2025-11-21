@@ -26,6 +26,8 @@ def generate_row(version: Version) -> str:
     links += f" [MacOS (x64)]({url(version, Platform.MACOS_X64)})"
     links += f" [Debian (x64)]({url(version, Platform.DEBIAN_X64)})"
     links += f" [Debian (ARM)]({url(version, Platform.DEBIAN_ARM)})"
+    links += f" [RHEL (x64)]({url(version, Platform.REDHAT_X64)})"
+    links += f" [RHEL (ARM)]({url(version, Platform.REDHAT_ARM)})"
     return f"| {str(version)} | {links} |\n"
 
 
