@@ -24,6 +24,8 @@ def generate_row(version: Version) -> str:
     links += f" [Windows (User)]({url(version, Platform.WINDOWS_USER)})"
     links += f" [MacOS (ARM)]({url(version, Platform.MACOS_ARM)})"
     links += f" [MacOS (x64)]({url(version, Platform.MACOS_X64)})"
+    links += f" [Debian (x64)]({url(version, Platform.DEBIAN_X64)})"
+    links += f" [Debian (ARM)]({url(version, Platform.DEBIAN_ARM)})"
     return f"| {str(version)} | {links} |\n"
 
 
