@@ -84,7 +84,7 @@ def trim_history(history: List[DailyRecord], limit: int = MAX_HISTORY_ROWS) -> L
     return history[-limit:]
 
 
-def latest_for_month(history: List[DailyRecord], month: str) -> Optional[DailyRecord]:
+def latest_for_month(history: List[DailyRecord], month: int) -> Optional[DailyRecord]:
     monthly = [record for record in history if record.get("version").month == month]
     if not monthly:
         return None
@@ -104,7 +104,7 @@ def build_record(year: int, month: int, build_number: int) -> DailyRecord:
     )
 
 
-def determine_start_build(history: List[DailyRecord], month: str) -> int:
+def determine_start_build(history: List[DailyRecord], month: int) -> int:
     monthly_latest = latest_for_month(history, month)
     if monthly_latest:
         return monthly_latest["version"].number + 1
