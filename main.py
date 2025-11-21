@@ -48,7 +48,7 @@ Last updated: {current_time}
 """
 
     if not history:
-        readme_content += "| No builds available | - | - | - |\n"
+        readme_content += "| No builds available | - | - | - | - | - | - | - | - |\n"
     else:
         for record in reversed(sort_history(history)):
             readme_content += generate_row(record["version"])
