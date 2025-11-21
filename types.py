@@ -4,9 +4,7 @@ import re
 
 
 class DailyRecord(TypedDict):
-    version: str
-    month: str
-    build_number: int
+    version: Version
     fetched_at: str
 
 @total_ordering
