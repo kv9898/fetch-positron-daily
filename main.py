@@ -40,8 +40,7 @@ Last updated: {current_time}
     else:
         for record in reversed(sort_history(history)):
             readme_content += (
-                f"| {record['version']} | "
-                f"[Download]({url(record['version'])}) |\n"
+                f"| {record['version']} | [Download]({url(record['version'])}) |\n"
             )
 
     readme_content += "\n## About\n\n"
@@ -77,28 +76,52 @@ def main():
     new_records: List[DailyRecord] = []
 
     try:
-        for build_number in range(start_build, start_build + SCAN_WINDOW):
-            version = Version(current_year, current_month, build_number)
-            build_url = url(version)
-            match check_downloadable(build_url):
-                case 200:
-                    latest_version = version
-                    record = build_record(current_year, current_month, build_number)
-                    history.append(record)
-                    new_records.append(record)
-                    print(
-                        bcolors.OKGREEN
-                        + f"{build_number}: downloadable: {build_url}"
-                        + bcolors.ENDC
-                    )
-                case 404 | 403:
-                    print(f"{build_number}: not downloadable.")
-                case _:
-                    print(
-                        bcolors.WARNING
-                        + f"{build_number}: unknown response."
-                        + bcolors.ENDC
-                    )
+        remaining_scans = SCAN_WINDOW
+        build_number = start_build
+
+        while (current_year < FALLBACK_YEAR) or (
+            current_year == FALLBACK_YEAR and current_month <= FALLBACK_MONTH
+        ):
+            while remaining_scans != 0:
+                version = Version(current_year, current_month, build_number)
+                build_url = url(version)
+                match check_downloadable(build_url):
+                    case 200:
+                        latest_version = version
+                        record = build_record(current_year, current_month, build_number)
+                        history.append(record)
+                        new_records.append(record)
+                        print(
+                            bcolors.OKGREEN
+                            + f"{build_number}: downloadable: {build_url}"
+                            + bcolors.ENDC
+                        )
+                        remaining_scans = (
+                            SCAN_WINDOW + 1
+                        )  # reset scan window on success
+
+                    case 404 | 403:
+                        print(f"{build_number}: not downloadable.")
+                    case _:
+                        print(
+                            bcolors.WARNING
+                            + f"{build_number}: unknown response."
+                            + bcolors.ENDC
+                        )
+                build_number += 1  # increment build number
+                remaining_scans -= 1
+
+            print(f"Month {current_month}/{current_year} scan complete.\n")
+            # end for month, reset build_number and remaining_scans
+            build_number = 0
+            remaining_scans = SCAN_WINDOW
+            # increment month/year
+            if current_month == 12:
+                current_month = 1
+                current_year += 1
+            else:
+                current_month += 1
+
     except KeyboardInterrupt:
         print("\nProcess interrupted by user. Exiting...")
 
