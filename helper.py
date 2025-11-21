@@ -22,6 +22,9 @@ def scrape_github_tags(max_pages: int = 5) -> List[Version]:
     versions: List[Version] = []
     current_url = base_url
     
+    # Build regex pattern for finding tag links using Version's pattern
+    tag_pattern = re.compile(f'/posit-dev/positron/releases/tag/{Version.VERSION_PATTERN}')
+    
     try:
         for page in range(max_pages):
             response = requests.get(current_url, timeout=30)
@@ -29,8 +32,8 @@ def scrape_github_tags(max_pages: int = 5) -> List[Version]:
             
             soup = BeautifulSoup(response.text, 'html.parser')
             
-            # Find all tag links - they follow the pattern /posit-dev/positron/releases/tag/{version}
-            tag_links = soup.find_all('a', href=re.compile(r'/posit-dev/positron/releases/tag/\d{4}\.\d{1,2}\.0-\d+'))
+            # Find all tag links that match the version pattern
+            tag_links = soup.find_all('a', href=tag_pattern)
             
             page_versions = 0
             for link in tag_links:

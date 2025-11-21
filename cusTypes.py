@@ -20,6 +20,9 @@ class DailyRecord(TypedDict):
 
 @total_ordering
 class Version:
+    # Version string pattern: YYYY.MM.0-BUILD (e.g., 2025.12.0-114)
+    VERSION_PATTERN = r"(\d{4})\.(\d{1,2})\.0-(\d+)"
+    
     year: int
     month: int
     number: int
@@ -49,7 +52,7 @@ class Version:
 
     @classmethod
     def from_string(cls, s: str) -> Version:
-        RE = re.compile(r"^(\d{4})\.(\d{1,2})\.0-(\d+)$")
+        RE = re.compile(f"^{cls.VERSION_PATTERN}$")
         m = RE.fullmatch(s.strip())
         if not m:
             raise ValueError(f"invalid version string: {s!r}")
