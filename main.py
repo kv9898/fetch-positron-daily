@@ -21,13 +21,13 @@ def generate_row(version: Version) -> str:
     """Generate a markdown table row for a given version."""
     links: str = ""
     links += f"[Windows (System)]({url(version, Platform.WINDOWS_SYS)})"
-    links += f" [Windows (User)]({url(version, Platform.WINDOWS_USER)})"
-    links += f" [MacOS (ARM)]({url(version, Platform.MACOS_ARM)})"
-    links += f" [MacOS (x64)]({url(version, Platform.MACOS_X64)})"
-    links += f" [Debian/Ubuntu (x64)]({url(version, Platform.DEBIAN_X64)})"
-    links += f" [Debian/Ubuntu (ARM)]({url(version, Platform.DEBIAN_ARM)})"
-    links += f" [RHEL (x64)]({url(version, Platform.REDHAT_X64)})"
-    links += f" [RHEL (ARM)]({url(version, Platform.REDHAT_ARM)})"
+    links += f"| [Windows (User)]({url(version, Platform.WINDOWS_USER)})"
+    links += f"| [MacOS (ARM)]({url(version, Platform.MACOS_ARM)})"
+    links += f"| [MacOS (x64)]({url(version, Platform.MACOS_X64)})"
+    links += f"| [Debian/Ubuntu (x64)]({url(version, Platform.DEBIAN_X64)})"
+    links += f"| [Debian/Ubuntu (ARM)]({url(version, Platform.DEBIAN_ARM)})"
+    links += f"| [RHEL (x64)]({url(version, Platform.REDHAT_X64)})"
+    links += f"| [RHEL (ARM)]({url(version, Platform.REDHAT_ARM)})"
     return f"| {str(version)} | {links} |\n"
 
 
@@ -43,8 +43,8 @@ This repository tracks available Positron daily builds.
 
 Last updated: {current_time}
 
-| Version | Download Link |
-|---------|---------------|
+| Version |        |       |       | Download | Links |       |       |       |
+|---------|--------|-------|-------|----------|-------|-------|-------|-------|
 """
 
     if not history:
