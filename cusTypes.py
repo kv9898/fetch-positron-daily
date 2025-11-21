@@ -85,3 +85,11 @@ class Version:
             other.month,
             other.number,
         )
+
+    def __hash__(self) -> int:
+        """Return a hash consistent with equality.
+
+        Uses the tuple of (year, month, number) so Version objects
+        can be used as dict keys and in sets.
+        """
+        return hash((self.year, self.month, self.number))
