@@ -4,7 +4,7 @@ This repository tracks available Positron daily builds.
 
 ## Latest Available Dailies
 
-Last updated: 2025-11-21 19:41:30 UTC
+Last updated: 2025-11-21 19:48:08 UTC
 
 | Version | Month | Build Number | Download Link |
 |---------|-------|--------------|---------------|

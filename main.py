@@ -2,16 +2,18 @@ import csv
 import requests
 import os
 from pathlib import Path
-from dotenv import load_dotenv
 from typing import Optional, List, TypedDict
 from datetime import date, datetime, timezone
 
-load_dotenv()
 # compute default as previous month (wrap to 12 if current month is January)
 today: date = date.today()
 default_month: int = today.month - 1 if today.month > 1 else 12
-CURRENT_MONTH: str = os.getenv("CURRENT_MONTH", str(default_month))
-CURRENT_VERSION: int = int(os.getenv("CURRENT_VERSION", "0")) # pyrefly: ignore
+# We no longer read CURRENT_MONTH/CURRENT_VERSION from .env. Instead we derive
+# the current month and start build from the latest CSV record. Keep a sensible
+# fallback for an empty CSV.
+FALLBACK_MONTH: str = str(default_month)
+FALLBACK_START_VERSION: int = 0
+# SCAN_WINDOW can still be controlled by env if desired (0 = no network checks)
 SCAN_WINDOW: int = max(0, int(os.getenv("SCAN_WINDOW", "50")))
 MAX_HISTORY_ROWS: int = 30
 CSV_PATH: Path = Path("data/dailies.csv")
@@ -26,7 +28,7 @@ class DailyRecord(TypedDict):
 
 
 def url(number: int, month: Optional[str] = None):
-    target_month = month if month is not None else CURRENT_MONTH
+    target_month = month if month is not None else FALLBACK_MONTH
     return f"https://cdn.posit.co/positron/dailies/win/x86_64/Positron-2025.{target_month}.0-{number}-Setup-x64.exe"
 
 
@@ -61,7 +63,7 @@ def load_history(path: Path) -> List[DailyRecord]:
             except ValueError:
                 continue
 
-            month = row.get("month") or CURRENT_MONTH
+            month = row.get("month") or FALLBACK_MONTH
             history.append(
                 DailyRecord(
                     version=row.get("version") or f"2025.{month}.0-{build_number}",
@@ -139,7 +141,7 @@ def determine_start_build(history: List[DailyRecord], month: str) -> int:
         return monthly_latest["build_number"] + 1
     if history:
         return 0
-    return CURRENT_VERSION
+    return FALLBACK_START_VERSION
 
 
 def generate_readme(history: List[DailyRecord]):
@@ -186,17 +188,24 @@ def write_readme(content: str):
 
 def main():
     history = load_history(CSV_PATH)
-    start_build = determine_start_build(history, CURRENT_MONTH)
+    # determine the current month from the latest CSV record if present,
+    # otherwise fall back to the configured default month
+    if history:
+        current_month: str = str(history[-1]["month"])
+    else:
+        current_month = FALLBACK_MONTH
+
+    start_build = determine_start_build(history, current_month)
     latest_version: Optional[int] = None
     new_records: List[DailyRecord] = []
 
     try:
         for build_number in range(start_build, start_build + SCAN_WINDOW):
-            build_url = url(build_number)
+            build_url = url(build_number, current_month)
             match check_downloadable(build_url):
                 case 200:
                     latest_version = build_number
-                    record = build_record(CURRENT_MONTH, build_number, build_url)
+                    record = build_record(current_month, build_number, build_url)
                     history.append(record)
                     new_records.append(record)
                     print(bcolors.OKGREEN + f"{build_number}: downloadable: {build_url}" + bcolors.ENDC)
