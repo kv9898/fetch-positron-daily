@@ -3,9 +3,63 @@ import requests
 from pathlib import Path
 from typing import Optional, List
 from datetime import datetime, timezone
+from bs4 import BeautifulSoup
+import re
 
 from config import MAX_HISTORY_ROWS, FALLBACK_START_VERSION
 from cusTypes import DailyRecord, Version, Platform
+
+
+def scrape_github_tags(max_pages: int = 5) -> List[Version]:
+    """
+    Scrape version tags from the Positron GitHub tags page.
+    Returns a list of Version objects parsed from the tag names.
+    
+    Args:
+        max_pages: Maximum number of pages to scrape (default 5, which should get 50+ tags)
+    """
+    base_url = "https://github.com/posit-dev/positron/tags"
+    versions: List[Version] = []
+    current_url = base_url
+    
+    try:
+        for page in range(max_pages):
+            response = requests.get(current_url, timeout=30)
+            response.raise_for_status()
+            
+            soup = BeautifulSoup(response.text, 'html.parser')
+            
+            # Find all tag links - they follow the pattern /posit-dev/positron/releases/tag/{version}
+            tag_links = soup.find_all('a', href=re.compile(r'/posit-dev/positron/releases/tag/\d{4}\.\d{1,2}\.0-\d+'))
+            
+            page_versions = 0
+            for link in tag_links:
+                tag_name = link.get_text(strip=True)
+                try:
+                    version = Version.from_string(tag_name)
+                    versions.append(version)
+                    page_versions += 1
+                except ValueError:
+                    # Skip tags that don't match our version format
+                    continue
+            
+            print(f"Page {page + 1}: Found {page_versions} version tags")
+            
+            # Look for next page link
+            next_link = soup.find('a', string='Next')
+            if next_link and next_link.get('href'):
+                current_url = "https://github.com" + next_link['href']
+            else:
+                print("No more pages to scrape")
+                break
+        
+        unique_versions = sorted(set(versions))
+        print(f"Total: Scraped {len(unique_versions)} unique version tags from GitHub")
+        return unique_versions
+        
+    except requests.exceptions.RequestException as e:
+        print(f"Error scraping GitHub tags: {e}")
+        return []
 
 
 def url(version: Version, platform: Platform = Platform.WINDOWS_SYS) -> str:
