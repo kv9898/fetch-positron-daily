@@ -1,5 +1,6 @@
 from typing import List
 from datetime import datetime, timezone
+import sys
 
 from helper import (
     DailyRecord,
@@ -7,14 +8,14 @@ from helper import (
     load_history,
     save_history,
     trim_history,
-    determine_start_build,
     check_downloadable,
     build_record,
     url,
     bcolors,
 )
-from config import CSV_PATH, FALLBACK_YEAR, FALLBACK_MONTH, SCAN_WINDOW
+from config import CSV_PATH
 from cusTypes import Version, Platform
+from git import fetch_latest_versions
 
 
 def generate_row(version: Version) -> str:
@@ -72,65 +73,42 @@ def write_readme(content: str):
 
 def main():
     history = load_history(CSV_PATH)
-    # determine the current month from the latest CSV record if present,
-    # otherwise fall back to the configured default month
-    if history:
-        current_year = history[-1]["version"].year
-        current_month = history[-1]["version"].month
-    else:
-        current_year = FALLBACK_YEAR
-        current_month = FALLBACK_MONTH
 
-    start_build = determine_start_build(history, current_month)
-    latest_version: Version | None = None
-    new_records: List[DailyRecord] = []
+    # Get existing versions from history to avoid re-checking
+    existing_versions: set[Version] = {record["version"] for record in history}
+
+    # Fetch tags from GitHub
+    print("Fetching version tags from GitHub...")
+    tag_versions = fetch_latest_versions()
+
+    if not tag_versions:
+        raise ConnectionError("No versions found from GitHub tags. Exiting...")
+
+    # Filter out versions we already have in history
+    new_versions = [v for v in tag_versions if v not in existing_versions]
+    print(f"Found {len(tag_versions)} total tags, {len(new_versions)} new versions to check")
 
     try:
-        remaining_scans = SCAN_WINDOW
-        build_number = start_build
+        for version in new_versions:
+            build_url = url(version)
+            match check_downloadable(url(version)):
+                case 200:
+                    record = build_record(version)
+                    history.append(record)
+                    print(
+                        bcolors.OKGREEN
+                        + f"{version.number}: downloadable: {build_url}"
+                        + bcolors.ENDC
+                    )
 
-        while (current_year < FALLBACK_YEAR) or (
-            current_year == FALLBACK_YEAR and current_month <= FALLBACK_MONTH
-        ):
-            while remaining_scans != 0:
-                version = Version(current_year, current_month, build_number)
-                build_url = url(version)
-                match check_downloadable(build_url):
-                    case 200:
-                        latest_version = version
-                        record = build_record(current_year, current_month, build_number)
-                        history.append(record)
-                        new_records.append(record)
-                        print(
-                            bcolors.OKGREEN
-                            + f"{build_number}: downloadable: {build_url}"
-                            + bcolors.ENDC
-                        )
-                        remaining_scans = (
-                            SCAN_WINDOW + 1
-                        )  # reset scan window on success
-
-                    case 404 | 403:
-                        print(f"{build_number}: not downloadable.")
-                    case _:
-                        print(
-                            bcolors.WARNING
-                            + f"{build_number}: unknown response."
-                            + bcolors.ENDC
-                        )
-                build_number += 1  # increment build number
-                remaining_scans -= 1
-
-            print(f"Month {current_month}/{current_year} scan complete.\n")
-            # end for month, reset build_number and remaining_scans
-            build_number = 0
-            remaining_scans = SCAN_WINDOW
-            # increment month/year
-            if current_month == 12:
-                current_month = 1
-                current_year += 1
-            else:
-                current_month += 1
+                case 404 | 403:
+                    print(f"{version}: not downloadable.")
+                case _:
+                    print(
+                        bcolors.WARNING
+                        + f"{version}: unknown response."
+                        + bcolors.ENDC
+                    )
 
     except KeyboardInterrupt:
         print("\nProcess interrupted by user. Exiting...")
@@ -138,8 +116,8 @@ def main():
     history = trim_history(sort_history(history))
     save_history(history, CSV_PATH)
 
-    if latest_version is not None:
-        print(f"Latest downloadable: {url(latest_version)}")
+    if history is not None:
+        print(f"Latest downloadable: {url(history[-1]['version'])}")
 
     readme_content = generate_readme(history)
     write_readme(readme_content)
@@ -147,4 +125,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

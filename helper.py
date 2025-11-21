@@ -4,12 +4,12 @@ from pathlib import Path
 from typing import Optional, List
 from datetime import datetime, timezone
 
-from config import MAX_HISTORY_ROWS, FALLBACK_START_VERSION
+from config import MAX_HISTORY_ROWS
 from cusTypes import DailyRecord, Version, Platform
 
 
 def url(version: Version, platform: Platform = Platform.WINDOWS_SYS) -> str:
-    link: str|None = None
+    link: str | None = None
     match platform:
         case Platform.WINDOWS_SYS:
             link = f"https://cdn.posit.co/positron/dailies/win/x86_64/Positron-{str(version)}-Setup-x64.exe"
@@ -99,20 +99,15 @@ def sort_history(history: List[DailyRecord]) -> List[DailyRecord]:
     return sorted(history, key=sort_key)
 
 
-def trim_history(history: List[DailyRecord], limit: int = MAX_HISTORY_ROWS) -> List[DailyRecord]:
+def trim_history(
+    history: List[DailyRecord], limit: int = MAX_HISTORY_ROWS
+) -> List[DailyRecord]:
     if len(history) <= limit:
         return history
     return history[-limit:]
 
 
-def latest_for_month(history: List[DailyRecord], month: int) -> Optional[DailyRecord]:
-    monthly = [record for record in history if record.get("version").month == month]
-    if not monthly:
-        return None
-    return monthly[-1]
-
-
-def build_record(year: int, month: int, build_number: int) -> DailyRecord:
+def build_record(version: Version) -> DailyRecord:
     timestamp = (
         datetime.now(timezone.utc)
         .replace(microsecond=0)
@@ -120,15 +115,6 @@ def build_record(year: int, month: int, build_number: int) -> DailyRecord:
         .replace("+00:00", "Z")
     )
     return DailyRecord(
-        version=Version(year, month, build_number),
+        version=version,
         fetched_at=timestamp,
     )
-
-
-def determine_start_build(history: List[DailyRecord], month: int) -> int:
-    monthly_latest = latest_for_month(history, month)
-    if monthly_latest:
-        return monthly_latest["version"].number + 1
-    if history:
-        return 0
-    return FALLBACK_START_VERSION
