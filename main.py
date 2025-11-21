@@ -1,5 +1,6 @@
 from typing import List
 from datetime import datetime, timezone
+import sys
 
 from helper import (
     DailyRecord,
@@ -73,14 +74,16 @@ def write_readme(content: str):
 
 def main():
     history = load_history(CSV_PATH)
-    # determine the current month from the latest CSV record if present,
-    # otherwise fall back to the configured default month
-    if history:
-        current_year = history[-1]["version"].year
-        current_month = history[-1]["version"].month
-    else:
-        current_year = FALLBACK_YEAR
-        current_month = FALLBACK_MONTH
+
+    # Get existing versions from history to avoid re-checking
+    existing_versions: set[Version] = {record["version"] for record in history}
+
+    # Fetch tags from GitHub
+    print("Fetching version tags from GitHub...")
+    tag_versions = fetch_latest_versions()
+
+    if tag_versions:
+        raise ConnectionError("No versions found from GitHub tags. Exiting...")
 
     start_build = determine_start_build(history, current_month)
     latest_version: Version | None = None
@@ -148,4 +151,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
