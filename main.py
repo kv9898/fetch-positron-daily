@@ -77,7 +77,10 @@ def main():
     new_records: List[DailyRecord] = []
 
     try:
-        for build_number in range(start_build, start_build + SCAN_WINDOW):
+        remaining_scans = SCAN_WINDOW
+        build_number = start_build
+
+        while remaining_scans != 0:
             version = Version(current_year, current_month, build_number)
             build_url = url(version)
             match check_downloadable(build_url):
@@ -91,6 +94,8 @@ def main():
                         + f"{build_number}: downloadable: {build_url}"
                         + bcolors.ENDC
                     )
+                    remaining_scans = SCAN_WINDOW + 1  # reset scan window on success
+
                 case 404 | 403:
                     print(f"{build_number}: not downloadable.")
                 case _:
@@ -99,6 +104,9 @@ def main():
                         + f"{build_number}: unknown response."
                         + bcolors.ENDC
                     )
+            build_number += 1 # increment build number
+            remaining_scans -= 1
+
     except KeyboardInterrupt:
         print("\nProcess interrupted by user. Exiting...")
 
