@@ -2,6 +2,10 @@ import os
 from pathlib import Path
 from datetime import date
 
+OWNER = "posit-dev"
+REPO = "positron"
+TOKEN = os.environ.get("GITHUB_TOKEN")  # optional, higher rate limit if set
+
 today: date = date.today()
 
 default_month: int = today.month + 1 if today.month < 12 else 1
