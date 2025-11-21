@@ -4,16 +4,17 @@ This repository tracks available Positron daily builds.
 
 ## Latest Available Dailies
 
-Last updated: 2025-11-21 19:57:26 UTC
+Last updated: 2025-11-21 21:00:29 UTC
 
-| Version | Month | Build Number | Download Link |
-|---------|-------|--------------|---------------|
-| 2025.12.0-114 | 12 | 114 | [Download](https://cdn.posit.co/positron/dailies/win/x86_64/Positron-2025.12.0-114-Setup-x64.exe) |
-| 2025.12.0-105 | 12 | 105 | [Download](https://cdn.posit.co/positron/dailies/win/x86_64/Positron-2025.12.0-105-Setup-x64.exe) |
-| 2025.12.0-91 | 12 | 91 | [Download](https://cdn.posit.co/positron/dailies/win/x86_64/Positron-2025.12.0-91-Setup-x64.exe) |
-| 2025.12.0-85 | 12 | 85 | [Download](https://cdn.posit.co/positron/dailies/win/x86_64/Positron-2025.12.0-85-Setup-x64.exe) |
-| 2025.12.0-79 | 12 | 79 | [Download](https://cdn.posit.co/positron/dailies/win/x86_64/Positron-2025.12.0-79-Setup-x64.exe) |
-| 2025.12.0-72 | 12 | 72 | [Download](https://cdn.posit.co/positron/dailies/win/x86_64/Positron-2025.12.0-72-Setup-x64.exe) |
+| Version | Download Link |
+|---------|---------------|
+| 2025.12.0-46 | [Download](https://cdn.posit.co/positron/dailies/win/x86_64/Positron-2025.12.0-46-Setup-x64.exe) |
+| 2025.12.0-35 | [Download](https://cdn.posit.co/positron/dailies/win/x86_64/Positron-2025.12.0-35-Setup-x64.exe) |
+| 2025.12.0-28 | [Download](https://cdn.posit.co/positron/dailies/win/x86_64/Positron-2025.12.0-28-Setup-x64.exe) |
+| 2025.12.0-25 | [Download](https://cdn.posit.co/positron/dailies/win/x86_64/Positron-2025.12.0-25-Setup-x64.exe) |
+| 2025.12.0-17 | [Download](https://cdn.posit.co/positron/dailies/win/x86_64/Positron-2025.12.0-17-Setup-x64.exe) |
+| 2025.12.0-9 | [Download](https://cdn.posit.co/positron/dailies/win/x86_64/Positron-2025.12.0-9-Setup-x64.exe) |
+| 2025.12.0-1 | [Download](https://cdn.posit.co/positron/dailies/win/x86_64/Positron-2025.12.0-1-Setup-x64.exe) |
 
 ## About
 
