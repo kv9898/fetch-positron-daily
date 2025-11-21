@@ -4,7 +4,7 @@ from datetime import date
 
 today: date = date.today()
 
-default_month: int = today.month - 1 if today.month > 1 else 12
+default_month: int = today.month + 1 if today.month < 12 else 1
 # We no longer read CURRENT_MONTH/CURRENT_VERSION from .env. Instead we derive
 # the current month and start build from the latest CSV record. Keep a sensible
 # fallback for an empty CSV.
