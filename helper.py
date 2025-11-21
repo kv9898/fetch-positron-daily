@@ -1,17 +1,11 @@
 import csv
 import requests
 from pathlib import Path
-from typing import Optional, List, TypedDict
+from typing import Optional, List
 from datetime import datetime, timezone
 
 from config import FALLBACK_MONTH, MAX_HISTORY_ROWS, FALLBACK_START_VERSION
-
-class DailyRecord(TypedDict):
-    version: str
-    month: str
-    build_number: int
-    download_url: str
-    fetched_at: str
+from types import DailyRecord
 
 
 def url(number: int, month: Optional[str] = None):
