@@ -21,6 +21,7 @@ def generate_row(version: Version) -> str:
     """Generate a markdown table row for a given version."""
     links: str = ""
     links += f"[Windows (System)]({url(version, Platform.WINDOWS_SYS)})"
+    links += f" [Windows (User)]({url(version, Platform.WINDOWS_USER)})"
     return f"| {str(version)} | {links} |\n"
 
 
