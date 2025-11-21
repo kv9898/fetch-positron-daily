@@ -1,8 +1,10 @@
+import csv
 import requests
 import os
-from dotenv import load_dotenv, set_key
-from typing import Optional, List, Tuple
-from datetime import date, datetime
+from pathlib import Path
+from dotenv import load_dotenv
+from typing import Optional, List, TypedDict
+from datetime import date, datetime, timezone
 
 load_dotenv()
 # compute default as previous month (wrap to 12 if current month is January)
@@ -10,10 +12,22 @@ today: date = date.today()
 default_month: int = today.month - 1 if today.month > 1 else 12
 CURRENT_MONTH: str = os.getenv("CURRENT_MONTH", str(default_month))
 CURRENT_VERSION: int = int(os.getenv("CURRENT_VERSION", "0")) # pyrefly: ignore
+SCAN_WINDOW: int = max(0, int(os.getenv("SCAN_WINDOW", "50")))
+MAX_HISTORY_ROWS: int = 30
+CSV_PATH: Path = Path("data/dailies.csv")
 
 
-def url(number: int):
-    return f"https://cdn.posit.co/positron/dailies/win/x86_64/Positron-2025.{CURRENT_MONTH}.0-{number}-Setup-x64.exe"
+class DailyRecord(TypedDict):
+    version: str
+    month: str
+    build_number: int
+    download_url: str
+    fetched_at: str
+
+
+def url(number: int, month: Optional[str] = None):
+    target_month = month if month is not None else CURRENT_MONTH
+    return f"https://cdn.posit.co/positron/dailies/win/x86_64/Positron-2025.{target_month}.0-{number}-Setup-x64.exe"
 
 
 class bcolors:
@@ -34,9 +48,103 @@ def check_downloadable(url: str) -> int:
         return -1
 
 
-def generate_readme(available_versions: List[Tuple[int, str]]):
+def load_history(path: Path) -> List[DailyRecord]:
+    if not path.exists():
+        return []
+
+    history: List[DailyRecord] = []
+    with path.open("r", encoding="utf-8", newline="") as csv_file:
+        reader = csv.DictReader(csv_file)
+        for row in reader:
+            try:
+                build_number = int(row.get("build_number", "0"))
+            except ValueError:
+                continue
+
+            month = row.get("month") or CURRENT_MONTH
+            history.append(
+                DailyRecord(
+                    version=row.get("version") or f"2025.{month}.0-{build_number}",
+                    month=month,
+                    build_number=build_number,
+                    download_url=row.get("download_url") or url(build_number, month),
+                    fetched_at=row.get("fetched_at", ""),
+                )
+            )
+
+    return sort_history(history)
+
+
+def save_history(history: List[DailyRecord], path: Path):
+    if not history and not path.exists():
+        return
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fieldnames = ["version", "month", "build_number", "download_url", "fetched_at"]
+    with path.open("w", encoding="utf-8", newline="") as csv_file:
+        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+        writer.writeheader()
+        for record in history:
+            writer.writerow(
+                {
+                    "version": record["version"],
+                    "month": record["month"],
+                    "build_number": record["build_number"],
+                    "download_url": record["download_url"],
+                    "fetched_at": record.get("fetched_at", ""),
+                }
+            )
+
+
+def sort_history(history: List[DailyRecord]) -> List[DailyRecord]:
+    def sort_key(record: DailyRecord):
+        fetched_at = record.get("fetched_at", "")
+        return (fetched_at, record["month"], record["build_number"])
+
+    return sorted(history, key=sort_key)
+
+
+def trim_history(history: List[DailyRecord], limit: int = MAX_HISTORY_ROWS) -> List[DailyRecord]:
+    if len(history) <= limit:
+        return history
+    return history[-limit:]
+
+
+def latest_for_month(history: List[DailyRecord], month: str) -> Optional[DailyRecord]:
+    monthly = [record for record in history if record["month"] == month]
+    if not monthly:
+        return None
+    return monthly[-1]
+
+
+def build_record(month: str, build_number: int, download_url: str) -> DailyRecord:
+    timestamp = (
+        datetime.now(timezone.utc)
+        .replace(microsecond=0)
+        .isoformat()
+        .replace("+00:00", "Z")
+    )
+    return DailyRecord(
+        version=f"2025.{month}.0-{build_number}",
+        month=month,
+        build_number=build_number,
+        download_url=download_url,
+        fetched_at=timestamp,
+    )
+
+
+def determine_start_build(history: List[DailyRecord], month: str) -> int:
+    monthly_latest = latest_for_month(history, month)
+    if monthly_latest:
+        return monthly_latest["build_number"] + 1
+    if history:
+        return 0
+    return CURRENT_VERSION
+
+
+def generate_readme(history: List[DailyRecord]):
     """Generate README.md with a table of available Positron dailies."""
-    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S UTC")
+    current_time = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
     
     readme_content = f"""# Positron Daily Builds
 
@@ -50,14 +158,22 @@ Last updated: {current_time}
 |---------|-------|--------------|---------------|
 """
     
-    for version_num, download_url in available_versions:
-        readme_content += f"| 2025.{CURRENT_MONTH}.0-{version_num} | {CURRENT_MONTH} | {version_num} | [Download]({download_url}) |\n"
-    
-    if not available_versions:
+    if not history:
         readme_content += "| No builds available | - | - | - |\n"
+    else:
+        for record in reversed(sort_history(history)):
+            readme_content += (
+                f"| {record['version']} | {record['month']} | {record['build_number']} | "
+                f"[Download]({record['download_url']}) |\n"
+            )
     
     readme_content += "\n## About\n\n"
     readme_content += "This list is automatically generated by scanning the Positron CDN for available daily builds.\n"
+    readme_content += "\n## Data persistence\n\n"
+    readme_content += (
+        "Daily build metadata is cached in `data/dailies.csv`, allowing the script to resume from the "
+        "last recorded build and limit the history to the 30 most recent dailies for quick reference.\n"
+    )
     
     return readme_content
 
@@ -69,33 +185,37 @@ def write_readme(content: str):
 
 
 def main():
+    history = load_history(CSV_PATH)
+    start_build = determine_start_build(history, CURRENT_MONTH)
     latest_version: Optional[int] = None
-    available_versions: List[Tuple[int, str]] = []
-    
+    new_records: List[DailyRecord] = []
+
     try:
-        for i in range(CURRENT_VERSION, CURRENT_VERSION + 50):
-            build_url = url(i)
+        for build_number in range(start_build, start_build + SCAN_WINDOW):
+            build_url = url(build_number)
             match check_downloadable(build_url):
                 case 200:
-                    latest_version = i
-                    available_versions.append((i, build_url))
-                    print(bcolors.OKGREEN + f"{i}: downloadable: {build_url}" + bcolors.ENDC)
+                    latest_version = build_number
+                    record = build_record(CURRENT_MONTH, build_number, build_url)
+                    history.append(record)
+                    new_records.append(record)
+                    print(bcolors.OKGREEN + f"{build_number}: downloadable: {build_url}" + bcolors.ENDC)
                 case 404 | 403:
-                    print(f"{i}: not downloadable.")
+                    print(f"{build_number}: not downloadable.")
                 case _:
-                    print(bcolors.WARNING + f"{i}: unknown response." + bcolors.ENDC)
+                    print(bcolors.WARNING + f"{build_number}: unknown response." + bcolors.ENDC)
     except KeyboardInterrupt:
         print("\nProcess interrupted by user. Exiting...")
-    
+
+    history = trim_history(sort_history(history))
+    save_history(history, CSV_PATH)
+
     if latest_version is not None:
-        set_key(".env", "CURRENT_VERSION", str(latest_version))
         print(f"Latest downloadable: {url(latest_version)}")
-    
-    # Generate and write README.md
-    if available_versions:
-        readme_content = generate_readme(available_versions)
-        write_readme(readme_content)
-        print(f"\nREADME.md generated with {len(available_versions)} available version(s).")
+
+    readme_content = generate_readme(history)
+    write_readme(readme_content)
+    print(f"\nREADME.md generated with {len(history)} recorded version(s).")
 
 
 if __name__ == "__main__":
