@@ -14,12 +14,15 @@ from helper import (
     bcolors,
 )
 from config import CSV_PATH, FALLBACK_YEAR, FALLBACK_MONTH, SCAN_WINDOW
-from cusTypes import Version
+from cusTypes import Version, Platform
 
 
 def generate_row(version: Version) -> str:
     """Generate a markdown table row for a given version."""
-    return f"| {str(version)} | [Download]({url(version)}) |\n"
+    links: str = ""
+    links += f"[Windows (System)]({url(version, Platform.WINDOWS_SYS)})"
+    return f"| {str(version)} | {links} |\n"
+
 
 def generate_readme(history: List[DailyRecord]):
     """Generate README.md with a table of available Positron dailies."""
