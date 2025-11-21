@@ -58,7 +58,7 @@ def save_history(history: List[DailyRecord], path: Path):
         return
 
     path.parent.mkdir(parents=True, exist_ok=True)
-    fieldnames = ["version", "month", "build_number", "download_url", "fetched_at"]
+    fieldnames = ["version", "fetched_at"]
     with path.open("w", encoding="utf-8", newline="") as csv_file:
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
         writer.writeheader()
