@@ -5,11 +5,32 @@ from typing import Optional, List
 from datetime import datetime, timezone
 
 from config import MAX_HISTORY_ROWS, FALLBACK_START_VERSION
-from cusTypes import DailyRecord, Version
+from cusTypes import DailyRecord, Version, Platform
 
 
-def url(version: Version) -> str:
-    return f"https://cdn.posit.co/positron/dailies/win/x86_64/Positron-{str(version)}-Setup-x64.exe"
+def url(version: Version, platform: Platform = Platform.WINDOWS_SYS) -> str:
+    link: str|None = None
+    match platform:
+        case Platform.WINDOWS_SYS:
+            link = f"https://cdn.posit.co/positron/dailies/win/x86_64/Positron-{str(version)}-Setup-x64.exe"
+        case Platform.WINDOWS_USER:
+            link = f"https://cdn.posit.co/positron/dailies/win/x86_64/Positron-{str(version)}-UserSetup-x64.exe"
+        case Platform.MACOS_ARM:
+            link = f"https://cdn.posit.co/positron/dailies/mac/arm64/Positron-{str(version)}-arm64.dmg"
+        case Platform.MACOS_X64:
+            link = f"https://cdn.posit.co/positron/dailies/mac/x64/Positron-{str(version)}-x64.dmg"
+        case Platform.DEBIAN_X64:
+            link = f"https://cdn.posit.co/positron/dailies/deb/x86_64/Positron-{str(version)}-x64.deb"
+        case Platform.DEBIAN_ARM:
+            link = f"https://cdn.posit.co/positron/dailies/deb/arm64/Positron-{str(version)}-arm64.deb"
+        case Platform.REDHAT_X64:
+            link = f"https://cdn.posit.co/positron/dailies/rpm/x86_64/Positron-{str(version)}-x64.rpm"
+        case Platform.REDHAT_ARM:
+            link = f"https://cdn.posit.co/positron/dailies/rpm/arm64/Positron-{str(version)}-arm64.rpm"
+    if link:
+        return link
+    else:
+        raise ValueError(f"unsupported platform: {platform}")
 
 
 class bcolors:
