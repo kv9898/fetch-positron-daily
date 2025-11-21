@@ -93,7 +93,7 @@ def main():
             build_url = url(version)
             match check_downloadable(url(version)):
                 case 200:
-                    record = build_record(version.year, version.month, version.number)
+                    record = build_record(version)
                     history.append(record)
                     print(
                         bcolors.OKGREEN
