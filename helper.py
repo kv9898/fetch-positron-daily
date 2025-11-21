@@ -107,13 +107,6 @@ def trim_history(
     return history[-limit:]
 
 
-def latest_for_month(history: List[DailyRecord], month: int) -> Optional[DailyRecord]:
-    monthly = [record for record in history if record.get("version").month == month]
-    if not monthly:
-        return None
-    return monthly[-1]
-
-
 def build_record(version: Version) -> DailyRecord:
     timestamp = (
         datetime.now(timezone.utc)
