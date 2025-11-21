@@ -5,6 +5,5 @@ description = "This repository tracks available Positron daily builds."
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
-    "dotenv>=0.9.9",
     "requests>=2.32.5",
 ]
