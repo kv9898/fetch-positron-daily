@@ -1,10 +1,10 @@
 # Positron Daily Builds
 
-This repository tracks available Positron daily builds.
+This repository tracks available [Positron daily builds](https://github.com/posit-dev/positron/tags).
 
 ## Latest Available Dailies
 
-Last updated: 2025-11-22 03:06:13 UTC
+Last updated: 2025-11-22 10:14:41 UTC
 
 | Version |        |       |       | Download | Links |       |       |       |
 |---------|--------|-------|-------|----------|-------|-------|-------|-------|

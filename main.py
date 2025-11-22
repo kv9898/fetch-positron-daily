@@ -38,7 +38,7 @@ def generate_readme(history: List[DailyRecord]):
 
     readme_content = f"""# Positron Daily Builds
 
-This repository tracks available Positron daily builds.
+This repository tracks available [Positron daily builds](https://github.com/posit-dev/positron/tags).
 
 ## Latest Available Dailies
 
