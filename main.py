@@ -12,6 +12,7 @@ from helper import (
     build_record,
     url,
     bcolors,
+    README_TEMPLATE,
 )
 from config import CSV_PATH
 from cusTypes import Version, Platform
@@ -36,17 +37,7 @@ def generate_readme(history: List[DailyRecord]):
     """Generate README.md with a table of available Positron dailies."""
     current_time = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
 
-    readme_content = f"""# Positron Daily Builds
-
-This repository tracks available [Positron daily builds](https://github.com/posit-dev/positron/tags).
-
-## Latest Available Dailies
-
-Last updated: {current_time}
-
-| Version |        |       |       | Download | Links |       |       |       |
-|---------|--------|-------|-------|----------|-------|-------|-------|-------|
-"""
+    readme_content = README_TEMPLATE.format(current_time=current_time)
 
     if not history:
         readme_content += "| No builds available | - | - | - | - | - | - | - | - |\n"
@@ -86,7 +77,9 @@ def main():
 
     # Filter out versions we already have in history
     new_versions = [v for v in tag_versions if v not in existing_versions]
-    print(f"Found {len(tag_versions)} total tags, {len(new_versions)} new versions to check")
+    print(
+        f"Found {len(tag_versions)} total tags, {len(new_versions)} new versions to check"
+    )
 
     try:
         for version in new_versions:
@@ -105,9 +98,7 @@ def main():
                     print(f"{version}: not downloadable.")
                 case _:
                     print(
-                        bcolors.WARNING
-                        + f"{version}: unknown response."
-                        + bcolors.ENDC
+                        bcolors.WARNING + f"{version}: unknown response." + bcolors.ENDC
                     )
 
     except KeyboardInterrupt:

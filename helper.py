@@ -7,6 +7,17 @@ from datetime import datetime, timezone
 from config import MAX_HISTORY_ROWS
 from cusTypes import DailyRecord, Version, Platform
 
+README_TEMPLATE = """# Positron Daily Builds
+
+This repository tracks available [Positron daily builds](https://github.com/posit-dev/positron/tags).
+
+## Latest Available Dailies
+
+Last updated: {current_time}
+
+| Version |        |       |       | Download | Links |       |       |       |
+|---------|--------|-------|-------|----------|-------|-------|-------|-------|
+"""
 
 def url(version: Version, platform: Platform = Platform.WINDOWS_SYS) -> str:
     link: str | None = None
