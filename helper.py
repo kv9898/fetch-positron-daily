@@ -1,7 +1,7 @@
 import csv
 import requests
 from pathlib import Path
-from typing import Optional, List
+from typing import List
 from datetime import datetime, timezone
 
 from config import MAX_HISTORY_ROWS
