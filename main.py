@@ -30,7 +30,7 @@ def generate_row(version: Version) -> str:
     links += f"| [Deb/Ubuntu (ARM)]({url(version, Platform.DEBIAN_ARM)})"
     links += f"| [RHEL (x64)]({url(version, Platform.REDHAT_X64)})"
     links += f"| [RHEL (ARM)]({url(version, Platform.REDHAT_ARM)})"
-    return f"| {str(version)} | {links} |\n"
+    return f"| [{str(version)}](https://github.com/posit-dev/positron/releases/tag/{str(version)}) | {links} |\n"
 
 
 def generate_readme(history: List[DailyRecord]):
