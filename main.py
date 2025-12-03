@@ -8,7 +8,8 @@ from helper import (
     load_history,
     save_history,
     trim_history,
-    check_downloadable,
+    verify_all_platforms,
+    checksums_url,
     build_record,
     url,
     bcolors,
@@ -83,23 +84,17 @@ def main():
 
     try:
         for version in new_versions:
-            build_url = url(version)
-            match check_downloadable(url(version)):
-                case 200:
-                    record = build_record(version)
-                    history.append(record)
-                    print(
-                        bcolors.OKGREEN
-                        + f"{version.number}: downloadable: {build_url}"
-                        + bcolors.ENDC
-                    )
-
-                case 404 | 403:
-                    print(f"{version}: not downloadable.")
-                case _:
-                    print(
-                        bcolors.WARNING + f"{version}: unknown response." + bcolors.ENDC
-                    )
+            checksum_url = checksums_url(version)
+            if verify_all_platforms(version):
+                record = build_record(version)
+                history.append(record)
+                print(
+                    bcolors.OKGREEN
+                    + f"{version}: all platforms verified: {checksum_url}"
+                    + bcolors.ENDC
+                )
+            else:
+                print(f"{version}: not all platforms available yet.")
 
     except KeyboardInterrupt:
         print("\nProcess interrupted by user. Exiting...")
