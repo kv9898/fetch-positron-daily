@@ -60,13 +60,18 @@ def fetch_checksums(version: Version) -> dict | None:
     Returns:
         dict: The parsed checksums JSON if successful, None otherwise.
     """
-    url = checksums_url(version)
+    checksum_url = checksums_url(version)
     try:
-        response = requests.get(url, timeout=30)
+        response = requests.get(checksum_url, timeout=30)
         if response.status_code == 200:
             return response.json()
+        # Non-200 status codes indicate the checksums file is not available yet
         return None
-    except (requests.exceptions.RequestException, ValueError):
+    except requests.exceptions.RequestException as e:
+        print(f"Network error fetching checksums for {version}: {e}")
+        return None
+    except ValueError as e:
+        print(f"Error parsing checksums JSON for {version}: {e}")
         return None
 
 
