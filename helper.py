@@ -19,34 +19,40 @@ Last updated: {current_time}
 |---------|--------|-------|-------|----------|-------|-------|-------|-------|
 """
 
-# Expected filenames templates for all platforms in the checksums JSON
-# These are the files that must be present for a build to be considered complete
-EXPECTED_FILES_TEMPLATES = [
-    "Positron-{version}-universal.dmg",
-    "Positron-darwin-{version}-universal.zip",
-    "Positron-{version}-arm64.dmg",
-    "Positron-darwin-{version}-arm64.zip",
-    "Positron-{version}-x64.dmg",
-    "Positron-darwin-{version}-x64.zip",
-    "Positron-{version}-Setup-x64.exe",
-    "Positron-{version}-UserSetup-x64.exe",
-    "Positron-{version}-Setup-arm64.exe",
-    "Positron-{version}-UserSetup-arm64.exe",
-    "Positron-{version}-x64.deb",
-    "Positron-{version}-arm64.deb",
-    "Positron-{version}-x64.rpm",
-    "Positron-{version}-arm64.rpm",
-    "positron-reh-linux-x64-{version}.tar.gz",
-    "positron-reh-linux-arm64-{version}.tar.gz",
-    "positron-workbench-linux-x64-{version}.tar.gz",
-    "positron-workbench-linux-arm64-{version}.tar.gz",
-]
+# Mapping from Platform enum to the checksum filename template
+PLATFORM_CHECKSUM_FILES = {
+    Platform.WINDOWS_SYS: "Positron-{version}-Setup-x64.exe",
+    Platform.WINDOWS_USER: "Positron-{version}-UserSetup-x64.exe",
+    Platform.MACOS_ARM: "Positron-{version}-arm64.dmg",
+    Platform.MACOS_X64: "Positron-{version}-x64.dmg",
+    Platform.DEBIAN_X64: "Positron-{version}-x64.deb",
+    Platform.DEBIAN_ARM: "Positron-{version}-arm64.deb",
+    Platform.REDHAT_X64: "Positron-{version}-x64.rpm",
+    Platform.REDHAT_ARM: "Positron-{version}-arm64.rpm",
+}
 
 
-def get_expected_filenames(version: Version) -> List[str]:
-    """Generate the list of expected filenames for a given version."""
-    version_str = str(version)
-    return [template.format(version=version_str) for template in EXPECTED_FILES_TEMPLATES]
+def get_checksum_filename(version: Version, platform: Platform) -> str:
+    """Get the expected checksum filename for a given version and platform."""
+    template = PLATFORM_CHECKSUM_FILES.get(platform)
+    if template is None:
+        raise ValueError(f"unsupported platform: {platform}")
+    return template.format(version=str(version))
+
+
+def is_platform_available(checksums: dict, version: Version, platform: Platform) -> bool:
+    """Check if a specific platform build is available in the checksums.
+    
+    Args:
+        checksums: Dictionary containing checksum data.
+        version: Version to check.
+        platform: Platform to check availability for.
+    
+    Returns:
+        True if the platform build is available, False otherwise.
+    """
+    filename = get_checksum_filename(version, platform)
+    return filename in checksums
 
 
 def checksums_url(version: Version) -> str:
@@ -73,20 +79,6 @@ def fetch_checksums(version: Version) -> dict | None:
     except ValueError as e:
         print(f"Error parsing checksums JSON for {version}: {e}")
         return None
-
-
-def verify_all_platforms(version: Version) -> bool:
-    """Verify that all expected platform files exist in the checksums JSON.
-
-    Returns:
-        True if all expected files are present, False otherwise.
-    """
-    checksums = fetch_checksums(version)
-    if checksums is None:
-        return False
-
-    expected_files = get_expected_filenames(version)
-    return all(filename in checksums for filename in expected_files)
 
 
 def url(version: Version, platform: Platform = Platform.WINDOWS_SYS) -> str:
