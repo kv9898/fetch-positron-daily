@@ -1,4 +1,5 @@
 from enum import Enum
+from cusTypes import Version
 
 
 class Platform(Enum):
@@ -56,3 +57,6 @@ class Platform(Enum):
     def get_file_name(self, version):
         """Format the checksum filename with the given version."""
         return self.checksum_template.format(version=version)
+
+    def url(self, version: Version) -> str:
+        return self.url_template.format(version=str(version))
