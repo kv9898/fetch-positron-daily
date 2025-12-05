@@ -1,4 +1,4 @@
-
+from functools import total_ordering
 from typing import TypedDict
 from platforms import Platform
 from .version import Version
@@ -9,6 +9,7 @@ class DailyRecord(TypedDict):
     fetched_at: str
 
 
+@total_ordering
 class DailyAvailability:
     version: Version
     available_platforms: dict[Platform, bool]
@@ -57,11 +58,3 @@ class DailyAvailability:
         if not isinstance(other, DailyAvailability):
             return NotImplemented
         return self.version < other.version
-
-    def __le__(self, other) -> bool:
-        if not isinstance(other, DailyAvailability):
-            return NotImplemented
-        return self.version <= other.version
-
-
-
