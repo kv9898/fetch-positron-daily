@@ -1,6 +1,6 @@
-from cusTypes.version import Version
-from config import OWNER, REPO, TOKEN, MAX_HISTORY_ROWS
 import requests
+from config import OWNER, REPO, TOKEN, MAX_HISTORY_ROWS
+from cusTypes.version import Version
 
 def convert_tag_to_version(tag: dict) -> Version | None:
     try:
