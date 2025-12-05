@@ -61,7 +61,9 @@ def generate_readme(availability_list: List[DailyAvailability]) -> str:
     readme_content = README_TEMPLATE.format(current_time=current_time) + table_header()
 
     if not availability_list:
-        readme_content += "| No builds available | - | - | - | - | - | - | - | - |\n"
+        readme_content += (
+            "| No builds available |" + " - |" * len(System) + "\n"
+        )
     else:
         for availability in reversed(availability_list):
             readme_content += generate_row(availability)
