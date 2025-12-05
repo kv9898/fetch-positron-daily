@@ -124,13 +124,13 @@ def main():
     save_history(history, CSV_PATH)
 
     if history is not None:
-        print(f"Latest fully available version: {url(history[-1]['version'])}")
+        print(f"Latest fully available version: {Platform.WINDOWS_SYS.url(history[-1]['version'])}")
 
     availability_list = trim_availability(availability_list)
 
     readme_content = generate_readme(availability_list)
     write_readme(readme_content)
-    print(f"\nREADME.md generated with {len(history)} recorded version(s).")
+    print(f"\nREADME.md generated with {len(availability_list)} recorded version(s).")
 
 
 if __name__ == "__main__":
