@@ -19,6 +19,68 @@ Last updated: {current_time}
 |---------|--------|-------|-------|----------|-------|-------|-------|-------|
 """
 
+# Mapping from Platform enum to the checksum filename template
+PLATFORM_CHECKSUM_FILES = {
+    Platform.WINDOWS_SYS: "Positron-{version}-Setup-x64.exe",
+    Platform.WINDOWS_USER: "Positron-{version}-UserSetup-x64.exe",
+    Platform.MACOS_ARM: "Positron-{version}-arm64.dmg",
+    Platform.MACOS_X64: "Positron-{version}-x64.dmg",
+    Platform.DEBIAN_X64: "Positron-{version}-x64.deb",
+    Platform.DEBIAN_ARM: "Positron-{version}-arm64.deb",
+    Platform.REDHAT_X64: "Positron-{version}-x64.rpm",
+    Platform.REDHAT_ARM: "Positron-{version}-arm64.rpm",
+}
+
+
+def get_checksum_filename(version: Version, platform: Platform) -> str:
+    """Get the expected checksum filename for a given version and platform."""
+    template = PLATFORM_CHECKSUM_FILES.get(platform)
+    if template is None:
+        raise ValueError(f"unsupported platform: {platform}")
+    return template.format(version=str(version))
+
+
+def is_platform_available(checksums: dict, version: Version, platform: Platform) -> bool:
+    """Check if a specific platform build is available in the checksums.
+    
+    Args:
+        checksums: Dictionary containing checksum data.
+        version: Version to check.
+        platform: Platform to check availability for.
+    
+    Returns:
+        True if the platform build is available, False otherwise.
+    """
+    filename = get_checksum_filename(version, platform)
+    return filename in checksums
+
+
+def checksums_url(version: Version) -> str:
+    """Return the URL for the checksums JSON file for a given version."""
+    return f"https://cdn.posit.co/positron/dailies/checksums/positron-{str(version)}-checksums.json"
+
+
+def fetch_checksums(version: Version) -> dict | None:
+    """Fetch and parse the checksums JSON for a given version.
+
+    Returns:
+        dict: The parsed checksums JSON if successful, None otherwise.
+    """
+    checksum_url = checksums_url(version)
+    try:
+        response = requests.get(checksum_url, timeout=30)
+        if response.status_code == 200:
+            return response.json()
+        # Non-200 status codes indicate the checksums file is not available yet
+        return None
+    except requests.exceptions.RequestException as e:
+        print(f"Network error fetching checksums for {version}: {e}")
+        return None
+    except ValueError as e:
+        print(f"Error parsing checksums JSON for {version}: {e}")
+        return None
+
+
 def url(version: Version, platform: Platform = Platform.WINDOWS_SYS) -> str:
     link: str | None = None
     match platform:
@@ -48,18 +110,6 @@ class bcolors:
     OKGREEN = "\033[92m"
     WARNING = "\033[93m"
     ENDC = "\033[0m"
-
-
-def check_downloadable(url: str) -> int:
-    try:
-        # Send a HEAD request to the URL
-        response = requests.head(url)
-
-        # Check if the response status code is 200 (OK), indicating the file is available
-        return response.status_code
-    except requests.exceptions.RequestException as e:
-        print(f"An error occurred: {e}")
-        return -1
 
 
 def load_history(path: Path) -> List[DailyRecord]:
