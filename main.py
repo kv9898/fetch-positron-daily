@@ -131,7 +131,7 @@ def main():
 
     availability_list = trim_availability(availability_list)
 
-    readme_content = generate_readme(history)
+    readme_content = generate_readme(availability_list)
     write_readme(readme_content)
     print(f"\nREADME.md generated with {len(history)} recorded version(s).")
 
