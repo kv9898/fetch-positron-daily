@@ -48,6 +48,21 @@ class DailyAvailability:
                     f"Value for platform {platform} must be bool, got {type(is_available).__name__}"
                 )
 
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, DailyAvailability):
+            return NotImplemented
+        return self.version == other.version
+
+    def __lt__(self, other) -> bool:
+        if not isinstance(other, DailyAvailability):
+            return NotImplemented
+        return self.version < other.version
+
+    def __le__(self, other) -> bool:
+        if not isinstance(other, DailyAvailability):
+            return NotImplemented
+        return self.version <= other.version
+
 
 @total_ordering
 class Version:
