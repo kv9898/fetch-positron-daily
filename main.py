@@ -17,7 +17,7 @@ from helper import (
 from config import CSV_PATH
 from cusTypes.record import DailyAvailability
 from cusTypes.version import Version
-from platforms import Platform
+from platforms import Platform, System, Architecture
 from git import fetch_latest_versions
 
 
@@ -31,12 +31,20 @@ def generate_row(availability: DailyAvailability) -> str:
         A markdown formatted table row string.
     """
 
-    def platform_link(platform: Platform) -> str:
-        if availability.available_platforms[platform]:
-            return f"[{platform.display_name}]({platform.url(availability.version)})"
-        return "-"
+    def system_links(system: System) -> str:
+        text: str = system.value + "<br>"
+        arch_links: list[str] = []
+        for arch in Architecture:
+            try:
+                platform = Platform.get(system, arch)
+                arch_links.append(
+                    f"([{arch.value}]({platform.url(availability.version)}))"
+                )
+            except ValueError:
+                pass
+        return text + " ".join(arch_links)
 
-    links: str = "| ".join(platform_link(platform) for platform in Platform) 
+    links: str = "| ".join(system_links(system) for system in System)
     return f"| [{str(availability.version)}](https://github.com/posit-dev/positron/releases/tag/{str(availability.version)}) | {links} |\n"
 
 
@@ -100,7 +108,9 @@ def main():
                     1 for p in Platform if availability.available_platforms[p]
                 )
                 if available_count == len(Platform):
-                    history.append(record)  # Add record to history only if all platforms are available
+                    history.append(
+                        record
+                    )  # Add record to history only if all platforms are available
                 print(
                     bcolors.OKGREEN
                     + f"{version}: checksums available ({available_count}/{len(Platform)} platforms)"
@@ -116,7 +126,9 @@ def main():
     save_history(history, CSV_PATH)
 
     if history:
-        print(f"Latest fully available version: {Platform.WINDOWS_SYS.url(history[-1]['version'])}")
+        print(
+            f"Latest fully available version: {Platform.WINDOWS_SYS.url(history[-1]['version'])}"
+        )
 
     availability_list = trim_availability(availability_list)
 
