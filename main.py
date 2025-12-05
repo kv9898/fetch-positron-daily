@@ -36,11 +36,8 @@ def generate_row(availability: DailyAvailability) -> str:
             return f"[{platform.display_name}]({platform.url(availability.version)})"
         return "-"
 
-    links: str = ""
-    for platform in Platform:
-        links += "| "
-        links += platform_link(platform)
-    return f"| [{str(availability.version)}](https://github.com/posit-dev/positron/releases/tag/{str(availability.version)}) {links} |\n"
+    links: str = "| ".join(platform_link(platform) for platform in Platform) 
+    return f"| [{str(availability.version)}](https://github.com/posit-dev/positron/releases/tag/{str(availability.version)}) | {links} |\n"
 
 
 def generate_readme(availability_list: List[DailyAvailability]) -> str:
