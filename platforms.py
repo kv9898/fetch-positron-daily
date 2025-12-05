@@ -38,32 +38,38 @@ class Platform(Enum):
         "https://cdn.posit.co/positron/dailies/win/arm64/Positron-{version}-UserSetup-arm64.exe",
     )
     MACOS_ARM = (
-        "MacOS (ARM)",
+        System.MACOS,
+        Architecture.ARM,
         "Positron-{version}-arm64.dmg",
         "https://cdn.posit.co/positron/dailies/mac/arm64/Positron-{version}-arm64.dmg",
     )
     MACOS_X64 = (
-        "MacOS (x64)",
+        System.MACOS,
+        Architecture.X64,
         "Positron-{version}-x64.dmg",
         "https://cdn.posit.co/positron/dailies/mac/x64/Positron-{version}-x64.dmg",
     )
     DEBIAN_X64 = (
-        "Deb/Ubuntu (x64)",
+        System.DEBIAN,
+        Architecture.X64,
         "Positron-{version}-x64.deb",
         "https://cdn.posit.co/positron/dailies/deb/x86_64/Positron-{version}-x64.deb",
     )
     DEBIAN_ARM = (
-        "Deb/Ubuntu (ARM)",
+        System.DEBIAN,
+        Architecture.ARM,
         "Positron-{version}-arm64.deb",
         "https://cdn.posit.co/positron/dailies/deb/arm64/Positron-{version}-arm64.deb",
     )
     REDHAT_X64 = (
-        "RHEL (x64)",
+        System.REDHAT,
+        Architecture.X64,
         "Positron-{version}-x64.rpm",
         "https://cdn.posit.co/positron/dailies/rpm/x86_64/Positron-{version}-x64.rpm",
     )
     REDHAT_ARM = (
-        "RHEL (ARM)",
+        System.REDHAT,
+        Architecture.ARM,
         "Positron-{version}-arm64.rpm",
         "https://cdn.posit.co/positron/dailies/rpm/arm64/Positron-{version}-arm64.rpm",
     )
