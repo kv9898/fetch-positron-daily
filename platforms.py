@@ -1,6 +1,16 @@
 from enum import Enum
 from cusTypes.version import Version
 
+class System(Enum):
+    WINDOWS_SYS = "Windows (System)"
+    WINDOWS_USER = "Windows (User)"
+    MACOS = "MacOS"
+    DEBIAN = "Debian/Ubuntu Linux"
+    REDHAT = "Red Hat Linux"
+
+class Architecture(Enum):
+    X64 = "x64"
+    ARM = "ARM"
 
 class Platform(Enum):
     WINDOWS_SYS = (
@@ -54,8 +64,9 @@ class Platform(Enum):
         "https://cdn.posit.co/positron/dailies/rpm/arm64/Positron-{version}-arm64.rpm",
     )
 
-    def __init__(self, display_name, checksum_template, url_template):
-        self.display_name = display_name
+    def __init__(self, system: System, architecture: Architecture, checksum_template: str, url_template: str):
+        self.system = system
+        self.architecture = architecture
         self.checksum_template = checksum_template
         self.url_template = url_template
 
