@@ -18,7 +18,8 @@ from helper import (
     README_TEMPLATE,
 )
 from config import CSV_PATH
-from types.record import Version, DailyAvailability
+from cusTypes.record import DailyAvailability
+from cusTypes.version import Version
 from platforms import Platform
 from git import fetch_latest_versions
 
