@@ -1,10 +1,5 @@
 from functools import total_ordering
-from typing import TypedDict
 import re
-
-class DailyRecord(TypedDict):
-    version: Version
-    fetched_at: str
 
 @total_ordering
 class Version:
@@ -20,9 +15,7 @@ class Version:
           Version("2025", "3", "2")
         """
         if year is None or month is None or number is None:
-            raise TypeError(
-                "Version expects three values: year, month, number"
-            )
+            raise TypeError("Version expects three values: year, month, number")
 
         try:
             self.year = int(year)

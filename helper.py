@@ -5,8 +5,9 @@ from typing import List
 from datetime import datetime, timezone
 
 from config import MAX_HISTORY_ROWS
-from cusTypes import DailyRecord, Version
-from platforms import Platform, PLATFORM_CHECKSUM_FILES
+from cusTypes.record import DailyRecord, DailyAvailability
+from cusTypes.version import Version
+from platforms import Platform
 
 README_TEMPLATE = """# Positron Daily Builds
 
@@ -19,29 +20,6 @@ Last updated: {current_time}
 | Version |        |       |       | Download | Links |       |       |       |
 |---------|--------|-------|-------|----------|-------|-------|-------|-------|
 """
-
-
-def get_checksum_filename(version: Version, platform: Platform) -> str:
-    """Get the expected checksum filename for a given version and platform."""
-    template = PLATFORM_CHECKSUM_FILES.get(platform)
-    if template is None:
-        raise ValueError(f"unsupported platform: {platform}")
-    return template.format(version=str(version))
-
-
-def is_platform_available(checksums: dict, version: Version, platform: Platform) -> bool:
-    """Check if a specific platform build is available in the checksums.
-    
-    Args:
-        checksums: Dictionary containing checksum data.
-        version: Version to check.
-        platform: Platform to check availability for.
-    
-    Returns:
-        True if the platform build is available, False otherwise.
-    """
-    filename = get_checksum_filename(version, platform)
-    return filename in checksums
 
 
 def checksums_url(version: Version) -> str:
@@ -70,29 +48,22 @@ def fetch_checksums(version: Version) -> dict | None:
         return None
 
 
-def url(version: Version, platform: Platform = Platform.WINDOWS_SYS) -> str:
-    link: str | None = None
-    match platform:
-        case Platform.WINDOWS_SYS:
-            link = f"https://cdn.posit.co/positron/dailies/win/x86_64/Positron-{str(version)}-Setup-x64.exe"
-        case Platform.WINDOWS_USER:
-            link = f"https://cdn.posit.co/positron/dailies/win/x86_64/Positron-{str(version)}-UserSetup-x64.exe"
-        case Platform.MACOS_ARM:
-            link = f"https://cdn.posit.co/positron/dailies/mac/arm64/Positron-{str(version)}-arm64.dmg"
-        case Platform.MACOS_X64:
-            link = f"https://cdn.posit.co/positron/dailies/mac/x64/Positron-{str(version)}-x64.dmg"
-        case Platform.DEBIAN_X64:
-            link = f"https://cdn.posit.co/positron/dailies/deb/x86_64/Positron-{str(version)}-x64.deb"
-        case Platform.DEBIAN_ARM:
-            link = f"https://cdn.posit.co/positron/dailies/deb/arm64/Positron-{str(version)}-arm64.deb"
-        case Platform.REDHAT_X64:
-            link = f"https://cdn.posit.co/positron/dailies/rpm/x86_64/Positron-{str(version)}-x64.rpm"
-        case Platform.REDHAT_ARM:
-            link = f"https://cdn.posit.co/positron/dailies/rpm/arm64/Positron-{str(version)}-arm64.rpm"
-    if link:
-        return link
-    else:
-        raise ValueError(f"unsupported platform: {platform}")
+def fetch_availability(version: Version) -> DailyAvailability | None:
+    checksums = fetch_checksums(version)
+    if checksums is None:
+        return None
+
+    # Convert checksums dictionary to platform availability dictionary
+    # Normalize: include all platforms from Platform enum, set missing to False
+    platform_availability = {}
+
+    for platform in Platform:
+        filename = platform.get_file_name(version)
+        # Check if this filename exists in the checksums
+        is_available = filename in checksums
+        platform_availability[platform] = is_available
+
+    return DailyAvailability(version, platform_availability)
 
 
 class bcolors:
@@ -155,6 +126,24 @@ def trim_history(
     if len(history) <= limit:
         return history
     return history[-limit:]
+
+
+def trim_availability(
+    availability_list: List[DailyAvailability], limit: int = MAX_HISTORY_ROWS
+) -> List[DailyAvailability]:
+    sorted_list = sorted(availability_list)
+    if len(sorted_list) <= limit:
+        return sorted_list
+    return sorted_list[-limit:]
+
+
+def history_to_availability(history: List[DailyRecord]) -> List[DailyAvailability]:
+    return [
+        DailyAvailability(
+            version=record["version"], available_platforms={p: True for p in Platform}
+        )
+        for record in history
+    ]
 
 
 def build_record(version: Version) -> DailyRecord:
