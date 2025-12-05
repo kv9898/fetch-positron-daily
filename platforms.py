@@ -8,10 +8,20 @@ class Platform(Enum):
         "Positron-{version}-Setup-x64.exe",
         "https://cdn.posit.co/positron/dailies/win/x86_64/Positron-{version}-Setup-x64.exe",
     )
+    WINDOWS_SYS_ARM = (
+        "Win (System ARM)",
+        "Positron-{version}-Setup-arm64.exe",
+        "https://cdn.posit.co/positron/dailies/win/arm64/Positron-{version}-Setup-arm64.exe",
+    )
     WINDOWS_USER = (
         "Win (User)",
         "Positron-{version}-UserSetup-x64.exe",
         "https://cdn.posit.co/positron/dailies/win/x86_64/Positron-{version}-UserSetup-x64.exe",
+    )
+    WINDOWS_USER_ARM = (
+        "Win (User ARM)",
+        "Positron-{version}-UserSetup-arm64.exe",
+        "https://cdn.posit.co/positron/dailies/win/arm64/Positron-{version}-UserSetup-arm64.exe",
     )
     MACOS_ARM = (
         "MacOS (ARM)",
