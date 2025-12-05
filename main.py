@@ -118,7 +118,7 @@ def main():
     history = trim_history(sort_history(history))
     save_history(history, CSV_PATH)
 
-    if history is not None:
+    if history:
         print(f"Latest fully available version: {Platform.WINDOWS_SYS.url(history[-1]['version'])}")
 
     availability_list = trim_availability(availability_list)
