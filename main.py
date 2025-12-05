@@ -14,7 +14,6 @@ from helper import (
     fetch_availability,
     is_platform_available,
     build_record,
-    url,
     bcolors,
     README_TEMPLATE,
 )
