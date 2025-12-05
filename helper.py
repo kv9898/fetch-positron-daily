@@ -5,7 +5,8 @@ from typing import List
 from datetime import datetime, timezone
 
 from config import MAX_HISTORY_ROWS
-from cusTypes import DailyRecord, Version, Platform
+from cusTypes import DailyRecord, Version
+from platforms import Platform
 
 README_TEMPLATE = """# Positron Daily Builds
 
