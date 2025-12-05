@@ -17,7 +17,8 @@ from helper import (
     README_TEMPLATE,
 )
 from config import CSV_PATH
-from cusTypes import Version, Platform
+from cusTypes import Version
+from platforms import Platform
 from git import fetch_latest_versions
 
 
