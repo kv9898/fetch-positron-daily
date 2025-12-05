@@ -96,7 +96,7 @@ def main():
         for version in new_versions:
             availability = fetch_availability(version)
             if availability is not None:
-                # Add version if checksums exist (even if some platforms are missing)
+                # Add version to final display if checksums exist (even if some platforms are missing)
                 record = build_record(version)
                 availability_list.append(availability)
                 available_count = sum(
