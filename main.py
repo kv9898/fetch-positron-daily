@@ -103,7 +103,7 @@ def main():
                     1 for p in Platform if availability.available_platforms[p]
                 )
                 if available_count == len(Platform):
-                    history.append(record) # Add record to history only if all platforms are available
+                    history.append(record)  # Add record to history only if all platforms are available
                 print(
                     bcolors.OKGREEN
                     + f"{version}: checksums available ({available_count}/{len(Platform)} platforms)"
