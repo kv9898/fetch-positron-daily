@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 from config import MAX_HISTORY_ROWS
 from cusTypes.record import DailyRecord, DailyAvailability
 from cusTypes.version import Version
-from platforms import Platform
+from platforms import Platform, System
 
 README_TEMPLATE = """# Positron Daily Builds
 
@@ -17,9 +17,20 @@ This repository tracks available [Positron daily builds](https://github.com/posi
 
 Last updated: {current_time}
 
-| Version |        |       |       | Download | Links |       |       |       |
-|---------|--------|-------|-------|----------|-------|-------|-------|-------|
 """
+
+
+def table_header(num_systems: int = len(System)) -> str:
+    start: str = "| Version |"
+
+    half = num_systems // 2
+
+    left_spaces: str = "       |" * (half - 1)
+    right_spaces: str = "       |" * (num_systems - half - 1)
+    first: str = start + left_spaces + " Download | Links |" + right_spaces
+
+    second: str = "|---------|" + "--------|" * num_systems
+    return first + "\n" + second + "\n"
 
 
 def checksums_url(version: Version) -> str:
