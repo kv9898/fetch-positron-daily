@@ -10,8 +10,8 @@ from helper import (
     trim_history,
     history_to_availability,
     fetch_checksums,
+    fetch_availability,
     is_platform_available,
-    checksums_url,
     build_record,
     url,
     bcolors,
@@ -105,18 +105,19 @@ def main():
 
     try:
         for version in new_versions:
-            checksum_url = checksums_url(version)
-            checksums = fetch_checksums(version)
-            if checksums is not None:
+            availability = fetch_availability(version)
+            if availability is not None:
                 # Add version if checksums exist (even if some platforms are missing)
                 record = build_record(version)
-                history.append(record)
+                availability_list.append(availability)
                 available_count = sum(
-                    1 for p in Platform if is_platform_available(checksums, version, p)
+                    1 for p in Platform if availability.available_platforms[p]
                 )
+                if available_count == len(Platform):
+                    history.append(record) # Add record to history only if all platforms are available
                 print(
                     bcolors.OKGREEN
-                    + f"{version}: checksums available ({available_count}/{len(Platform)} platforms): {checksum_url}"
+                    + f"{version}: checksums available ({available_count}/{len(Platform)} platforms)"
                     + bcolors.ENDC
                 )
             else:
