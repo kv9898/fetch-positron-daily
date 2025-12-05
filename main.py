@@ -37,11 +37,15 @@ def generate_row(availability: DailyAvailability) -> str:
         for arch in Architecture:
             try:
                 platform = Platform.get(system, arch)
+                if not availability.available_platforms[platform]:
+                    continue
                 arch_links.append(
                     f"([{arch.value}]({platform.url(availability.version)}))"
                 )
             except ValueError:
                 pass
+        if not arch_links:
+            return text + "-"
         return text + " ".join(arch_links)
 
     links: str = "| ".join(system_links(system) for system in System)
