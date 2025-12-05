@@ -8,6 +8,7 @@ from helper import (
     load_history,
     save_history,
     trim_history,
+    trim_availability,
     history_to_availability,
     fetch_checksums,
     fetch_availability,
@@ -131,6 +132,8 @@ def main():
 
     if history is not None:
         print(f"Latest downloadable: {url(history[-1]['version'])}")
+
+    availability_list = trim_availability(availability_list)
 
     readme_content = generate_readme(history)
     write_readme(readme_content)
