@@ -5,7 +5,7 @@ from typing import List
 from datetime import datetime, timezone
 
 from config import MAX_HISTORY_ROWS
-from cusTypes import DailyRecord, Version
+from cusTypes import DailyRecord, DailyAvailability, Version
 from platforms import Platform
 
 README_TEMPLATE = """# Positron Daily Builds
@@ -150,6 +150,14 @@ def trim_history(
         return history
     return history[-limit:]
 
+
+def history_to_availability(
+    history: List[DailyRecord]
+) -> List[DailyAvailability]:
+    return [
+        DailyAvailability(version=record["version"], available_platforms={p: True for p in Platform})
+        for record in history
+    ]
 
 def build_record(version: Version) -> DailyRecord:
     timestamp = (
