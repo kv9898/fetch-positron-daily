@@ -131,7 +131,7 @@ def main():
     save_history(history, CSV_PATH)
 
     if history is not None:
-        print(f"Latest downloadable: {url(history[-1]['version'])}")
+        print(f"Latest fully available version: {url(history[-1]['version'])}")
 
     availability_list = trim_availability(availability_list)
 
