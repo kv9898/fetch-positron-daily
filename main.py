@@ -3,14 +3,12 @@ from datetime import datetime, timezone
 import sys
 
 from helper import (
-    DailyRecord,
     sort_history,
     load_history,
     save_history,
     trim_history,
     trim_availability,
     history_to_availability,
-    fetch_checksums,
     fetch_availability,
     is_platform_available,
     build_record,
