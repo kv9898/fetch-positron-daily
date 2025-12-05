@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 import sys
 
 from helper import (
+    table_header,
     sort_history,
     load_history,
     save_history,
@@ -56,7 +57,7 @@ def generate_readme(availability_list: List[DailyAvailability]) -> str:
     """Generate README.md with a table of available Positron dailies."""
     current_time = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
 
-    readme_content = README_TEMPLATE.format(current_time=current_time)
+    readme_content = README_TEMPLATE.format(current_time=current_time) + table_header()
 
     if not availability_list:
         readme_content += "| No builds available | - | - | - | - | - | - | - | - |\n"
