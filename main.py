@@ -8,6 +8,7 @@ from helper import (
     load_history,
     save_history,
     trim_history,
+    history_to_availability,
     fetch_checksums,
     is_platform_available,
     checksums_url,
@@ -24,20 +25,20 @@ from git import fetch_latest_versions
 
 def generate_row(version: Version, checksums: dict) -> str:
     """Generate a markdown table row for a given version with availability checks.
-    
+
     Args:
         version: Version to generate row for.
         checksums: Dictionary containing checksum data for the version.
-    
+
     Returns:
         A markdown formatted table row string.
     """
-    
+
     def platform_link(platform: Platform, label: str) -> str:
         if is_platform_available(checksums, version, platform):
             return f"[{label}]({url(version, platform)})"
         return "-"
-    
+
     links: str = ""
     links += platform_link(Platform.WINDOWS_SYS, "Win (System)")
     links += "| " + platform_link(Platform.WINDOWS_USER, "Win (User)")
@@ -84,6 +85,7 @@ def write_readme(content: str):
 
 def main():
     history = load_history(CSV_PATH)
+    availability_list = history_to_availability(history)
 
     # Get existing versions from history to avoid re-checking
     existing_versions: set[Version] = {record["version"] for record in history}
