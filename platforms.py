@@ -59,4 +59,5 @@ class Platform(Enum):
         return self.checksum_template.format(version=version)
 
     def url(self, version: Version) -> str:
+        """Generate the download URL for this platform with the given version."""
         return self.url_template.format(version=str(version))
