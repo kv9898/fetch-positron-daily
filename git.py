@@ -1,5 +1,5 @@
 from cusTypes import Version
-from config import OWNER, REPO, TOKEN
+from config import OWNER, REPO, TOKEN, MAX_HISTORY_ROWS
 import requests
 
 def convert_tag_to_version(tag: dict) -> Version | None:
@@ -8,7 +8,7 @@ def convert_tag_to_version(tag: dict) -> Version | None:
     except ValueError:
         return None
 
-def fetch_latest_versions(n: int = 30) -> list[Version]:
+def fetch_latest_versions(n: int = MAX_HISTORY_ROWS) -> list[Version]:
     session = requests.Session()
     if TOKEN:
         session.headers.update({"Authorization": f"token {TOKEN}"})
