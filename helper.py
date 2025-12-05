@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 
 from config import MAX_HISTORY_ROWS
 from cusTypes import DailyRecord, Version
-from platforms import Platform, PLATFORM_CHECKSUM_FILES
+from platforms import Platform
 
 README_TEMPLATE = """# Positron Daily Builds
 
@@ -21,26 +21,20 @@ Last updated: {current_time}
 """
 
 
-def get_checksum_filename(version: Version, platform: Platform) -> str:
-    """Get the expected checksum filename for a given version and platform."""
-    template = PLATFORM_CHECKSUM_FILES.get(platform)
-    if template is None:
-        raise ValueError(f"unsupported platform: {platform}")
-    return template.format(version=str(version))
-
-
-def is_platform_available(checksums: dict, version: Version, platform: Platform) -> bool:
+def is_platform_available(
+    checksums: dict, version: Version, platform: Platform
+) -> bool:
     """Check if a specific platform build is available in the checksums.
-    
+
     Args:
         checksums: Dictionary containing checksum data.
         version: Version to check.
         platform: Platform to check availability for.
-    
+
     Returns:
         True if the platform build is available, False otherwise.
     """
-    filename = get_checksum_filename(version, platform)
+    filename = platform.get_file_name(version)
     return filename in checksums
 
 
