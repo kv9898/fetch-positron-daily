@@ -14,22 +14,26 @@ class Architecture(Enum):
 
 class Platform(Enum):
     WINDOWS_SYS = (
-        "Win (System)",
+        System.WINDOWS_SYS,
+        Architecture.X64,
         "Positron-{version}-Setup-x64.exe",
         "https://cdn.posit.co/positron/dailies/win/x86_64/Positron-{version}-Setup-x64.exe",
     )
     WINDOWS_SYS_ARM = (
-        "Win (System ARM)",
+        System.WINDOWS_SYS,
+        Architecture.ARM,
         "Positron-{version}-Setup-arm64.exe",
         "https://cdn.posit.co/positron/dailies/win/arm64/Positron-{version}-Setup-arm64.exe",
     )
     WINDOWS_USER = (
-        "Win (User)",
+        System.WINDOWS_USER,
+        Architecture.X64,
         "Positron-{version}-UserSetup-x64.exe",
         "https://cdn.posit.co/positron/dailies/win/x86_64/Positron-{version}-UserSetup-x64.exe",
     )
     WINDOWS_USER_ARM = (
-        "Win (User ARM)",
+        System.WINDOWS_USER,
+        Architecture.ARM,
         "Positron-{version}-UserSetup-arm64.exe",
         "https://cdn.posit.co/positron/dailies/win/arm64/Positron-{version}-UserSetup-arm64.exe",
     )
