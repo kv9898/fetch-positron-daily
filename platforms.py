@@ -92,3 +92,11 @@ class Platform(Enum):
     def url(self, version: Version) -> str:
         """Generate the download URL for this platform with the given version."""
         return self.url_template.format(version=str(version))
+
+    @classmethod
+    def get(cls, system: System, architecture: Architecture) -> "Platform":
+        """Get the Platform enum member for the given system and architecture."""
+        for platform in cls:
+            if platform.system == system and platform.architecture == architecture:
+                return platform
+        raise ValueError(f"No platform found for {system} {architecture}")
