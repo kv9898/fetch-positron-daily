@@ -131,10 +131,10 @@ def trim_history(
 def trim_availability(
     availability_list: List[DailyAvailability], limit: int = MAX_HISTORY_ROWS
 ) -> List[DailyAvailability]:
-    availability_list.sort()
-    if len(availability_list) <= limit:
-        return availability_list
-    return availability_list[-limit:]
+    sorted_list = sorted(availability_list)
+    if len(sorted_list) <= limit:
+        return sorted_list
+    return sorted_list[-limit:]
 
 
 def history_to_availability(history: List[DailyRecord]) -> List[DailyAvailability]:
