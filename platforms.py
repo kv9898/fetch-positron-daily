@@ -50,11 +50,11 @@ class Platform(Enum):
         self.url_template = url_template
 
     @property
-    def filename_template(self):
+    def filename_template(self) -> str:
         """Get the checksum filename template for this platform."""
         return self.checksum_template
 
-    def get_file_name(self, version):
+    def get_file_name(self, version: Version) -> str:
         """Format the checksum filename with the given version."""
         return self.checksum_template.format(version=version)
 
