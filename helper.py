@@ -63,21 +63,22 @@ def fetch_checksums(version: Version) -> dict | None:
         print(f"Error parsing checksums JSON for {version}: {e}")
         return None
 
+
 def fetch_availability(version: Version) -> DailyAvailability | None:
     checksums = fetch_checksums(version)
     if checksums is None:
         return None
-    
+
     # Convert checksums dictionary to platform availability dictionary
     # Normalize: include all platforms from Platform enum, set missing to False
     platform_availability = {}
-    
+
     for platform in Platform:
         filename = platform.get_file_name(version)
         # Check if this filename exists in the checksums
         is_available = filename in checksums
         platform_availability[platform] = is_available
-    
+
     return DailyAvailability(version, platform_availability)
 
 
@@ -142,6 +143,7 @@ def trim_history(
         return history
     return history[-limit:]
 
+
 def trim_availability(
     availability_list: List[DailyAvailability], limit: int = MAX_HISTORY_ROWS
 ) -> List[DailyAvailability]:
@@ -150,13 +152,15 @@ def trim_availability(
         return availability_list
     return availability_list[-limit:]
 
-def history_to_availability(
-    history: List[DailyRecord]
-) -> List[DailyAvailability]:
+
+def history_to_availability(history: List[DailyRecord]) -> List[DailyAvailability]:
     return [
-        DailyAvailability(version=record["version"], available_platforms={p: True for p in Platform})
+        DailyAvailability(
+            version=record["version"], available_platforms={p: True for p in Platform}
+        )
         for record in history
     ]
+
 
 def build_record(version: Version) -> DailyRecord:
     timestamp = (
