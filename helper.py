@@ -22,23 +22,6 @@ Last updated: {current_time}
 """
 
 
-def is_platform_available(
-    checksums: dict, version: Version, platform: Platform
-) -> bool:
-    """Check if a specific platform build is available in the checksums.
-
-    Args:
-        checksums: Dictionary containing checksum data.
-        version: Version to check.
-        platform: Platform to check availability for.
-
-    Returns:
-        True if the platform build is available, False otherwise.
-    """
-    filename = platform.get_file_name(version)
-    return filename in checksums
-
-
 def checksums_url(version: Version) -> str:
     """Return the URL for the checksums JSON file for a given version."""
     return f"https://cdn.posit.co/positron/dailies/checksums/positron-{str(version)}-checksums.json"

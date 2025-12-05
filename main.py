@@ -10,7 +10,6 @@ from helper import (
     trim_availability,
     history_to_availability,
     fetch_availability,
-    is_platform_available,
     build_record,
     bcolors,
     README_TEMPLATE,
