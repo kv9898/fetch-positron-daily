@@ -1,4 +1,4 @@
-from cusTypes import Version
+from types.record import Version
 from config import OWNER, REPO, TOKEN, MAX_HISTORY_ROWS
 import requests
 

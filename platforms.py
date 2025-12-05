@@ -1,5 +1,5 @@
 from enum import Enum
-from cusTypes import Version
+from types.record import Version
 
 
 class Platform(Enum):
