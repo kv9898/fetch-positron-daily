@@ -18,8 +18,6 @@ This repository tracks available [Positron daily builds](https://github.com/posi
 
 Last updated: {current_time}
 
-| Version |        |       |       | Download | Links |       |       |       |
-|---------|--------|-------|-------|----------|-------|-------|-------|-------|
 """
 
 
