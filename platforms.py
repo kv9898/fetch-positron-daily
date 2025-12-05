@@ -4,48 +4,48 @@ from cusTypes.version import Version
 
 class Platform(Enum):
     WINDOWS_SYS = (
-        "windows_sys",
+        "Win (System)",
         "Positron-{version}-Setup-x64.exe",
         "https://cdn.posit.co/positron/dailies/win/x86_64/Positron-{version}-Setup-x64.exe",
     )
     WINDOWS_USER = (
-        "windows_user",
+        "Win (User)",
         "Positron-{version}-UserSetup-x64.exe",
         "https://cdn.posit.co/positron/dailies/win/x86_64/Positron-{version}-UserSetup-x64.exe",
     )
     MACOS_ARM = (
-        "macos_arm",
+        "MacOS (ARM)",
         "Positron-{version}-arm64.dmg",
         "https://cdn.posit.co/positron/dailies/mac/arm64/Positron-{version}-arm64.dmg",
     )
     MACOS_X64 = (
-        "macos_x64",
+        "MacOS (x64)",
         "Positron-{version}-x64.dmg",
         "https://cdn.posit.co/positron/dailies/mac/x64/Positron-{version}-x64.dmg",
     )
     DEBIAN_X64 = (
-        "debian_x64",
+        "Deb/Ubuntu (x64)",
         "Positron-{version}-x64.deb",
         "https://cdn.posit.co/positron/dailies/deb/x86_64/Positron-{version}-x64.deb",
     )
     DEBIAN_ARM = (
-        "debian_arm",
+        "Deb/Ubuntu (ARM)",
         "Positron-{version}-arm64.deb",
         "https://cdn.posit.co/positron/dailies/deb/arm64/Positron-{version}-arm64.deb",
     )
     REDHAT_X64 = (
-        "redhat_x64",
+        "RHEL (x64)",
         "Positron-{version}-x64.rpm",
         "https://cdn.posit.co/positron/dailies/rpm/x86_64/Positron-{version}-x64.rpm",
     )
     REDHAT_ARM = (
-        "redhat_arm",
+        "RHEL (ARM)",
         "Positron-{version}-arm64.rpm",
         "https://cdn.posit.co/positron/dailies/rpm/arm64/Positron-{version}-arm64.rpm",
     )
 
-    def __init__(self, platform_id, checksum_template, url_template):
-        self.platform_id = platform_id
+    def __init__(self, display_name, checksum_template, url_template):
+        self.display_name = display_name
         self.checksum_template = checksum_template
         self.url_template = url_template
 
