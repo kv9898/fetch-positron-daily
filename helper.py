@@ -1,4 +1,3 @@
-from turtle import right
 import csv
 import requests
 from pathlib import Path
