@@ -14,7 +14,7 @@ def fetch_latest_versions(n: int = 30) -> list[Version]:
         session.headers.update({"Authorization": f"token {TOKEN}"})
 
     tags = []
-    url = f"https://api.github.com/repos/{OWNER}/{REPO}/tags?per_page=100"
+    url: str | None = f"https://api.github.com/repos/{OWNER}/{REPO}/tags?per_page=100"
     while url:
         resp = session.get(url)
         resp.raise_for_status()  # pyrefly: ignore
