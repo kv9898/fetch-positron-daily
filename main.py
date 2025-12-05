@@ -44,6 +44,7 @@ def generate_row(availability: DailyAvailability) -> str:
                     f"([{arch.value}]({platform.url(availability.version)}))"
                 )
             except ValueError:
+                # Skip invalid system/architecture combinations
                 pass
         if not arch_links:
             return text + "-"
