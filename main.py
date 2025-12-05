@@ -24,12 +24,11 @@ from platforms import Platform
 from git import fetch_latest_versions
 
 
-def generate_row(version: Version, checksums: dict) -> str:
-    """Generate a markdown table row for a given version with availability checks.
+def generate_row(availability: DailyAvailability) -> str:
+    """Generate a markdown table row for a given availability object.
 
     Args:
-        version: Version to generate row for.
-        checksums: Dictionary containing checksum data for the version.
+        availability: DailyAvailability object.
 
     Returns:
         A markdown formatted table row string.
@@ -49,7 +48,7 @@ def generate_row(version: Version, checksums: dict) -> str:
     links += "| " + platform_link(Platform.DEBIAN_ARM, "Deb/Ubuntu (ARM)")
     links += "| " + platform_link(Platform.REDHAT_X64, "RHEL (x64)")
     links += "| " + platform_link(Platform.REDHAT_ARM, "RHEL (ARM)")
-    return f"| [{str(version)}](https://github.com/posit-dev/positron/releases/tag/{str(version)}) | {links} |\n"
+    return f"| [{str(availability.version)}](https://github.com/posit-dev/positron/releases/tag/{str(availability.version)}) | {links} |\n"
 
 
 def generate_readme(availability_list: List[DailyAvailability]) -> str:
