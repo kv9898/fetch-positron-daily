@@ -1,4 +1,5 @@
 import csv
+import json
 import requests
 from pathlib import Path
 from typing import List
@@ -7,7 +8,7 @@ from datetime import datetime, timezone
 from config import MAX_HISTORY_ROWS
 from cusTypes.record import DailyRecord, DailyAvailability
 from cusTypes.version import Version
-from platforms import Platform, System
+from platforms import Platform, System, Architecture
 
 README_TEMPLATE = """# Positron Daily Builds
 
@@ -168,3 +169,46 @@ def build_record(version: Version) -> DailyRecord:
         version=version,
         fetched_at=timestamp,
     )
+
+
+def generate_json_data(availability_list: List[DailyAvailability]) -> dict:
+    """Generate JSON data structure from availability list.
+    
+    Args:
+        availability_list: List of DailyAvailability objects.
+        
+    Returns:
+        Dictionary with metadata and version information.
+    """
+    current_time = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
+    
+    versions = []
+    for availability in reversed(availability_list):
+        version_str = str(availability.version)
+        
+        # Build downloads dictionary organized by system and architecture
+        downloads = {}
+        for system in System:
+            system_downloads = {}
+            for arch in Architecture:
+                try:
+                    platform = Platform.get(system, arch)
+                    if availability.available_platforms[platform]:
+                        system_downloads[arch.value] = platform.url(availability.version)
+                except ValueError:
+                    # Skip invalid system/architecture combinations
+                    pass
+            if system_downloads:
+                downloads[system.value] = system_downloads
+        
+        versions.append({
+            "version": version_str,
+            "release_url": f"https://github.com/posit-dev/positron/releases/tag/{version_str}",
+            "downloads": downloads
+        })
+    
+    return {
+        "last_updated": current_time,
+        "count": len(versions),
+        "versions": versions
+    }
