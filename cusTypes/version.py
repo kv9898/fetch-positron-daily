@@ -44,8 +44,8 @@ class Version:
             raise ValueError(f"month must be in 1..12 (got {self.month})")
         if self.year < 1900:
             raise ValueError(f"year must be >= 1900 (got {self.year})")
-        if self.type not in (0, 1):
-            raise ValueError(f"type must be 0 (beta) or 1 (release) (got {self.type})")
+        # if self.type not in (0, 1):
+        #     raise ValueError(f"type must be 0 (beta) or 1 (release) (got {self.type})")
         if self.number < 0:
             raise ValueError(f"number must be non-negative (got {self.number})")
 
