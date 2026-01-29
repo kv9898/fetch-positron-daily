@@ -1,7 +1,59 @@
 {
-  "last_updated": "2026-01-28 03:47:23 UTC",
+  "last_updated": "2026-01-29 04:08:57 UTC",
   "count": 30,
   "versions": [
+    {
+      "version": "2026.02.0-135",
+      "release_url": "https://github.com/posit-dev/positron/releases/tag/2026.02.0-135",
+      "downloads": {
+        "Windows (System)": {
+          "x64": "https://cdn.posit.co/positron/dailies/win/x86_64/Positron-2026.02.0-135-Setup-x64.exe",
+          "ARM": "https://cdn.posit.co/positron/dailies/win/arm64/Positron-2026.02.0-135-Setup-arm64.exe"
+        },
+        "Windows (User)": {
+          "x64": "https://cdn.posit.co/positron/dailies/win/x86_64/Positron-2026.02.0-135-UserSetup-x64.exe",
+          "ARM": "https://cdn.posit.co/positron/dailies/win/arm64/Positron-2026.02.0-135-UserSetup-arm64.exe"
+        },
+        "MacOS": {
+          "x64": "https://cdn.posit.co/positron/dailies/mac/x64/Positron-2026.02.0-135-x64.dmg",
+          "ARM": "https://cdn.posit.co/positron/dailies/mac/arm64/Positron-2026.02.0-135-arm64.dmg"
+        },
+        "Debian/Ubuntu Linux": {
+          "x64": "https://cdn.posit.co/positron/dailies/deb/x86_64/Positron-2026.02.0-135-x64.deb",
+          "ARM": "https://cdn.posit.co/positron/dailies/deb/arm64/Positron-2026.02.0-135-arm64.deb"
+        },
+        "Red Hat Linux": {
+          "x64": "https://cdn.posit.co/positron/dailies/rpm/x86_64/Positron-2026.02.0-135-x64.rpm",
+          "ARM": "https://cdn.posit.co/positron/dailies/rpm/arm64/Positron-2026.02.0-135-arm64.rpm"
+        }
+      }
+    },
+    {
+      "version": "2026.02.0-129",
+      "release_url": "https://github.com/posit-dev/positron/releases/tag/2026.02.0-129",
+      "downloads": {
+        "Windows (System)": {
+          "x64": "https://cdn.posit.co/positron/dailies/win/x86_64/Positron-2026.02.0-129-Setup-x64.exe",
+          "ARM": "https://cdn.posit.co/positron/dailies/win/arm64/Positron-2026.02.0-129-Setup-arm64.exe"
+        },
+        "Windows (User)": {
+          "x64": "https://cdn.posit.co/positron/dailies/win/x86_64/Positron-2026.02.0-129-UserSetup-x64.exe",
+          "ARM": "https://cdn.posit.co/positron/dailies/win/arm64/Positron-2026.02.0-129-UserSetup-arm64.exe"
+        },
+        "MacOS": {
+          "x64": "https://cdn.posit.co/positron/dailies/mac/x64/Positron-2026.02.0-129-x64.dmg",
+          "ARM": "https://cdn.posit.co/positron/dailies/mac/arm64/Positron-2026.02.0-129-arm64.dmg"
+        },
+        "Debian/Ubuntu Linux": {
+          "x64": "https://cdn.posit.co/positron/dailies/deb/x86_64/Positron-2026.02.0-129-x64.deb",
+          "ARM": "https://cdn.posit.co/positron/dailies/deb/arm64/Positron-2026.02.0-129-arm64.deb"
+        },
+        "Red Hat Linux": {
+          "x64": "https://cdn.posit.co/positron/dailies/rpm/x86_64/Positron-2026.02.0-129-x64.rpm",
+          "ARM": "https://cdn.posit.co/positron/dailies/rpm/arm64/Positron-2026.02.0-129-arm64.rpm"
+        }
+      }
+    },
     {
       "version": "2026.02.0-119",
       "release_url": "https://github.com/posit-dev/positron/releases/tag/2026.02.0-119",
@@ -727,58 +779,6 @@
         "Red Hat Linux": {
           "x64": "https://cdn.posit.co/positron/dailies/rpm/x86_64/Positron-2026.01.0-31-x64.rpm",
           "ARM": "https://cdn.posit.co/positron/dailies/rpm/arm64/Positron-2026.01.0-31-arm64.rpm"
-        }
-      }
-    },
-    {
-      "version": "2026.01.0-24",
-      "release_url": "https://github.com/posit-dev/positron/releases/tag/2026.01.0-24",
-      "downloads": {
-        "Windows (System)": {
-          "x64": "https://cdn.posit.co/positron/dailies/win/x86_64/Positron-2026.01.0-24-Setup-x64.exe",
-          "ARM": "https://cdn.posit.co/positron/dailies/win/arm64/Positron-2026.01.0-24-Setup-arm64.exe"
-        },
-        "Windows (User)": {
-          "x64": "https://cdn.posit.co/positron/dailies/win/x86_64/Positron-2026.01.0-24-UserSetup-x64.exe",
-          "ARM": "https://cdn.posit.co/positron/dailies/win/arm64/Positron-2026.01.0-24-UserSetup-arm64.exe"
-        },
-        "MacOS": {
-          "x64": "https://cdn.posit.co/positron/dailies/mac/x64/Positron-2026.01.0-24-x64.dmg",
-          "ARM": "https://cdn.posit.co/positron/dailies/mac/arm64/Positron-2026.01.0-24-arm64.dmg"
-        },
-        "Debian/Ubuntu Linux": {
-          "x64": "https://cdn.posit.co/positron/dailies/deb/x86_64/Positron-2026.01.0-24-x64.deb",
-          "ARM": "https://cdn.posit.co/positron/dailies/deb/arm64/Positron-2026.01.0-24-arm64.deb"
-        },
-        "Red Hat Linux": {
-          "x64": "https://cdn.posit.co/positron/dailies/rpm/x86_64/Positron-2026.01.0-24-x64.rpm",
-          "ARM": "https://cdn.posit.co/positron/dailies/rpm/arm64/Positron-2026.01.0-24-arm64.rpm"
-        }
-      }
-    },
-    {
-      "version": "2026.01.0-12",
-      "release_url": "https://github.com/posit-dev/positron/releases/tag/2026.01.0-12",
-      "downloads": {
-        "Windows (System)": {
-          "x64": "https://cdn.posit.co/positron/dailies/win/x86_64/Positron-2026.01.0-12-Setup-x64.exe",
-          "ARM": "https://cdn.posit.co/positron/dailies/win/arm64/Positron-2026.01.0-12-Setup-arm64.exe"
-        },
-        "Windows (User)": {
-          "x64": "https://cdn.posit.co/positron/dailies/win/x86_64/Positron-2026.01.0-12-UserSetup-x64.exe",
-          "ARM": "https://cdn.posit.co/positron/dailies/win/arm64/Positron-2026.01.0-12-UserSetup-arm64.exe"
-        },
-        "MacOS": {
-          "x64": "https://cdn.posit.co/positron/dailies/mac/x64/Positron-2026.01.0-12-x64.dmg",
-          "ARM": "https://cdn.posit.co/positron/dailies/mac/arm64/Positron-2026.01.0-12-arm64.dmg"
-        },
-        "Debian/Ubuntu Linux": {
-          "x64": "https://cdn.posit.co/positron/dailies/deb/x86_64/Positron-2026.01.0-12-x64.deb",
-          "ARM": "https://cdn.posit.co/positron/dailies/deb/arm64/Positron-2026.01.0-12-arm64.deb"
-        },
-        "Red Hat Linux": {
-          "x64": "https://cdn.posit.co/positron/dailies/rpm/x86_64/Positron-2026.01.0-12-x64.rpm",
-          "ARM": "https://cdn.posit.co/positron/dailies/rpm/arm64/Positron-2026.01.0-12-arm64.rpm"
         }
       }
     }
