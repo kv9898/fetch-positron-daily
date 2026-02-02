@@ -4,7 +4,7 @@ This repository tracks available [Positron daily builds](https://github.com/posi
 
 ## Latest Available Dailies
 
-Last updated: 2026-02-01 04:30:52 UTC
+Last updated: 2026-02-02 04:26:11 UTC
 
 | Version |       | Download | Links |       |       |
 |---------|--------|--------|--------|--------|--------|
