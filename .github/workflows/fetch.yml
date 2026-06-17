@@ -2,8 +2,8 @@ name: Scheduled Positron Daily Fetcher
 
 on:
   schedule:
-    # Everyday at 10:00 UTC
-    - cron: '0 10 * * *'
+    # Everyday at 12:00 UTC
+    - cron: '0 12 * * *'
   workflow_dispatch:
 
 permissions:
