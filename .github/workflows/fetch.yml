@@ -29,6 +29,8 @@ jobs:
       run: uv sync
 
     - name: Run fetcher
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: uv run main.py
 
     - name: Commit changes
