@@ -8,14 +8,19 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 jobs:
   run-scraper:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Install uv
       run: |
@@ -41,3 +46,25 @@ jobs:
         DATE_UTC=$(date -u +'%Y-%m-%d')
         git commit -m "🔄 Auto-fetch update on $DATE_UTC" || echo "No changes"
         git push origin main
+
+    - name: Install APT repository tools
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y dpkg-dev
+
+    - name: Build APT repository
+      env:
+        BASE_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/apt
+      run: uv run build_apt_repo.py --output "$RUNNER_TEMP/positron-pages" --base-url "$BASE_URL"
+
+    - name: Configure GitHub Pages
+      uses: actions/configure-pages@v5
+
+    - name: Upload GitHub Pages artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: ${{ runner.temp }}/positron-pages
+
+    - name: Deploy GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
