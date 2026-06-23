@@ -103,18 +103,50 @@ def download_file(url: str, destination: Path) -> None:
     os.replace(temporary, destination)
 
 
-def write_packages_index(repo_dir: Path, suite: str, component: str, arch: str) -> None:
+def package_field(stanza: str, field_name: str) -> str | None:
+    prefix = f"{field_name}:"
+    for line in stanza.splitlines():
+        if line.startswith(prefix):
+            return line[len(prefix) :].strip()
+    return None
+
+
+def filter_packages_by_arch(packages_text: str, arch: str) -> str:
+    stanzas = [stanza.strip() for stanza in packages_text.split("\n\n") if stanza.strip()]
+    matching_stanzas = [
+        stanza
+        for stanza in stanzas
+        if package_field(stanza, "Architecture") in {arch, "all"}
+    ]
+
+    if not matching_stanzas:
+        raise ValueError(f"No packages found for architecture {arch}")
+
+    return "\n\n".join(matching_stanzas) + "\n"
+
+
+def scan_packages(repo_dir: Path) -> str:
+    result = subprocess.run(
+        ["dpkg-scanpackages", "pool"],
+        cwd=repo_dir,
+        check=True,
+        stdout=subprocess.PIPE,
+        text=True,
+    )
+    return result.stdout
+
+
+def write_packages_index(
+    repo_dir: Path, suite: str, component: str, arch: str, packages_text: str
+) -> None:
     index_dir = repo_dir / "dists" / suite / component / f"binary-{arch}"
     index_dir.mkdir(parents=True, exist_ok=True)
     packages_file = index_dir / "Packages"
 
-    with packages_file.open("w", encoding="utf-8") as output:
-        subprocess.run(
-            ["dpkg-scanpackages", "--arch", arch, "pool"],
-            cwd=repo_dir,
-            check=True,
-            stdout=output,
-        )
+    packages_file.write_text(
+        filter_packages_by_arch(packages_text, arch),
+        encoding="utf-8",
+    )
 
     with packages_file.open("rb") as raw_input:
         with (index_dir / "Packages.gz").open("wb") as raw_output:
@@ -276,8 +308,11 @@ def build_repo(args: argparse.Namespace) -> None:
         download_file(package.url, destination)
 
     architectures = sorted({package.debian_arch for package in packages})
+    packages_text = scan_packages(repo_dir)
     for architecture in architectures:
-        write_packages_index(repo_dir, args.suite, args.component, architecture)
+        write_packages_index(
+            repo_dir, args.suite, args.component, architecture, packages_text
+        )
 
     write_release_file(
         repo_dir,
