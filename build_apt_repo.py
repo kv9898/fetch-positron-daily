@@ -127,7 +127,7 @@ def filter_packages_by_arch(packages_text: str, arch: str) -> str:
 
 def scan_packages(repo_dir: Path) -> str:
     result = subprocess.run(
-        ["dpkg-scanpackages", "pool"],
+        ["dpkg-scanpackages", "--multiversion", "pool"],
         cwd=repo_dir,
         check=True,
         stdout=subprocess.PIPE,
