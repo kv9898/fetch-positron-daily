@@ -35,6 +35,10 @@ def apt_repository_url() -> str:
     return "https://kv9898.github.io/fetch-positron-daily/apt"
 
 
+def apt_key_url() -> str:
+    return f"{apt_repository_url()}/positron-daily-archive-keyring.asc"
+
+
 def generate_row(availability: DailyAvailability) -> str:
     """Generate a markdown table row for a given availability object.
 
@@ -88,21 +92,22 @@ def generate_readme(availability_list: List[DailyAvailability]) -> str:
     readme_content += "This JSON file contains structured data with version information and download URLs for all platforms and architectures.\n"
     readme_content += "\n## Debian/Ubuntu APT repository\n\n"
     readme_content += (
-        "The workflow publishes an unsigned APT repository for the latest x64 and ARM Debian packages. "
+        "The workflow publishes a signed APT repository for the latest x64 and ARM Debian packages. "
         "After GitHub Pages is enabled with the GitHub Actions source, Ubuntu users can subscribe with:\n\n"
     )
     readme_content += "```bash\n"
+    readme_content += (
+        f"curl -fsSL {apt_key_url()} "
+        "| sudo gpg --dearmor -o /usr/share/keyrings/positron-daily-archive-keyring.gpg\n"
+    )
     readme_content += "ARCH=$(dpkg --print-architecture)\n"
     readme_content += (
-        f'echo "deb [arch=${{ARCH}} trusted=yes] {apt_repository_url()} stable main" '
+        f'echo "deb [arch=${{ARCH}} signed-by=/usr/share/keyrings/positron-daily-archive-keyring.gpg] {apt_repository_url()} stable main" '
         "| sudo tee /etc/apt/sources.list.d/positron-daily.list\n"
     )
     readme_content += "sudo apt update\n"
     readme_content += "sudo apt install positron\n"
     readme_content += "```\n\n"
-    readme_content += (
-        "The source line uses `trusted=yes` because this personal repository is not GPG-signed yet.\n"
-    )
     readme_content += "\n## Data persistence\n\n"
     readme_content += (
         "Daily build metadata is cached in `data/dailies.csv`, allowing the script to resume from the "

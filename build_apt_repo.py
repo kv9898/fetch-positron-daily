@@ -23,6 +23,7 @@ ARCHITECTURES = {
     "x64": "amd64",
     "ARM": "arm64",
 }
+PUBLIC_KEY_FILE = "positron-daily-archive-keyring.asc"
 
 
 @dataclass(frozen=True)
@@ -50,6 +51,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--base-url", default="")
     parser.add_argument("--origin", default="Positron Daily Builds")
     parser.add_argument("--label", default="Positron Daily Builds")
+    parser.add_argument("--public-key", type=Path, default=Path(PUBLIC_KEY_FILE))
+    parser.add_argument("--signing-key", default=os.environ.get("APT_SIGNING_KEY_ID"))
     return parser.parse_args()
 
 
@@ -179,6 +182,56 @@ def write_release_file(
     (release_dir / "Release").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
+def sign_release_file(repo_dir: Path, suite: str, signing_key: str | None) -> None:
+    if not signing_key:
+        print("No signing key configured; APT repository will be unsigned.")
+        return
+
+    release_dir = repo_dir / "dists" / suite
+    release_file = release_dir / "Release"
+
+    subprocess.run(
+        [
+            "gpg",
+            "--batch",
+            "--yes",
+            "--local-user",
+            signing_key,
+            "--clearsign",
+            "--output",
+            str(release_dir / "InRelease"),
+            str(release_file),
+        ],
+        check=True,
+    )
+    subprocess.run(
+        [
+            "gpg",
+            "--batch",
+            "--yes",
+            "--local-user",
+            signing_key,
+            "--armor",
+            "--detach-sign",
+            "--output",
+            str(release_dir / "Release.gpg"),
+            str(release_file),
+        ],
+        check=True,
+    )
+
+
+def copy_public_key(public_key: Path, repo_dir: Path, required: bool) -> None:
+    if not public_key.exists():
+        message = f"Public key file not found: {public_key}"
+        if required:
+            raise FileNotFoundError(message)
+        print(message)
+        return
+
+    shutil.copyfile(public_key, repo_dir / PUBLIC_KEY_FILE)
+
+
 def write_site_index(output_dir: Path, base_url: str, suite: str, component: str) -> None:
     repo_url = base_url.rstrip("/") or "https://OWNER.github.io/REPOSITORY/apt"
     html = f"""<!doctype html>
@@ -197,11 +250,11 @@ def write_site_index(output_dir: Path, base_url: str, suite: str, component: str
 <body>
   <h1>Positron Daily APT Repository</h1>
   <p>This repository mirrors the latest Positron daily Debian packages.</p>
-  <pre><code>ARCH=$(dpkg --print-architecture)
-echo "deb [arch=${{ARCH}} trusted=yes] {repo_url} {suite} {component}" | sudo tee /etc/apt/sources.list.d/positron-daily.list
+  <pre><code>curl -fsSL {repo_url}/{PUBLIC_KEY_FILE} | sudo gpg --dearmor -o /usr/share/keyrings/positron-daily-archive-keyring.gpg
+ARCH=$(dpkg --print-architecture)
+echo "deb [arch=${{ARCH}} signed-by=/usr/share/keyrings/positron-daily-archive-keyring.gpg] {repo_url} {suite} {component}" | sudo tee /etc/apt/sources.list.d/positron-daily.list
 sudo apt update
 sudo apt install positron</code></pre>
-  <p>The repository is currently unsigned, so the source line uses <code>trusted=yes</code>.</p>
 </body>
 </html>
 """
@@ -234,6 +287,8 @@ def build_repo(args: argparse.Namespace) -> None:
         args.origin,
         args.label,
     )
+    sign_release_file(repo_dir, args.suite, args.signing_key)
+    copy_public_key(args.public_key, repo_dir, required=bool(args.signing_key))
     write_site_index(output_dir, args.base_url, args.suite, args.component)
 
     print(f"APT repository written to {repo_dir}")

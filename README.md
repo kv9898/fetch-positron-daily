@@ -49,16 +49,15 @@ A machine-readable JSON file with all download links is available at [`dailies.j
 
 ## Debian/Ubuntu APT repository
 
-The workflow publishes an unsigned APT repository for the latest x64 and ARM Debian packages. After GitHub Pages is enabled with the GitHub Actions source, Ubuntu users can subscribe with:
+The workflow publishes a signed APT repository for the latest x64 and ARM Debian packages. After GitHub Pages is enabled with the GitHub Actions source, Ubuntu users can subscribe with:
 
 ```bash
+curl -fsSL https://kv9898.github.io/fetch-positron-daily/apt/positron-daily-archive-keyring.asc | sudo gpg --dearmor -o /usr/share/keyrings/positron-daily-archive-keyring.gpg
 ARCH=$(dpkg --print-architecture)
-echo "deb [arch=${ARCH} trusted=yes] https://kv9898.github.io/fetch-positron-daily/apt stable main" | sudo tee /etc/apt/sources.list.d/positron-daily.list
+echo "deb [arch=${ARCH} signed-by=/usr/share/keyrings/positron-daily-archive-keyring.gpg] https://kv9898.github.io/fetch-positron-daily/apt stable main" | sudo tee /etc/apt/sources.list.d/positron-daily.list
 sudo apt update
 sudo apt install positron
 ```
-
-The source line uses `trusted=yes` because this personal repository is not GPG-signed yet.
 
 ## Data persistence
 
