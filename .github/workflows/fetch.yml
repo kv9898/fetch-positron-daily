@@ -14,6 +14,7 @@ permissions:
 jobs:
   run-scraper:
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -75,4 +76,5 @@ jobs:
 
     - name: Deploy GitHub Pages
       id: deployment
+      timeout-minutes: 5
       uses: actions/deploy-pages@v4
