@@ -4,7 +4,7 @@ This repository tracks available [Positron daily builds](https://github.com/posi
 
 ## Latest Available Dailies
 
-Last updated: 2026-06-23 14:42:00 UTC
+Last updated: 2026-06-23 18:27:02 UTC
 
 | Version |       | Download | Links |       |       |
 |---------|--------|--------|--------|--------|--------|
@@ -58,6 +58,7 @@ echo "deb [arch=${ARCH} signed-by=/usr/share/keyrings/positron-daily-archive-key
 sudo apt update
 sudo apt install positron
 ```
+
 
 ## Data persistence
 
