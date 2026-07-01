@@ -1,7 +1,33 @@
 {
-  "last_updated": "2026-06-30 14:12:28 UTC",
+  "last_updated": "2026-07-01 14:28:18 UTC",
   "count": 30,
   "versions": [
+    {
+      "version": "2026.07.0-352",
+      "release_url": "https://github.com/posit-dev/positron/releases/tag/2026.07.0-352",
+      "downloads": {
+        "Windows (System)": {
+          "x64": "https://cdn.posit.co/positron/dailies/win/x86_64/Positron-2026.07.0-352-Setup-x64.exe",
+          "ARM": "https://cdn.posit.co/positron/dailies/win/arm64/Positron-2026.07.0-352-Setup-arm64.exe"
+        },
+        "Windows (User)": {
+          "x64": "https://cdn.posit.co/positron/dailies/win/x86_64/Positron-2026.07.0-352-UserSetup-x64.exe",
+          "ARM": "https://cdn.posit.co/positron/dailies/win/arm64/Positron-2026.07.0-352-UserSetup-arm64.exe"
+        },
+        "MacOS": {
+          "x64": "https://cdn.posit.co/positron/dailies/mac/x64/Positron-2026.07.0-352-x64.dmg",
+          "ARM": "https://cdn.posit.co/positron/dailies/mac/arm64/Positron-2026.07.0-352-arm64.dmg"
+        },
+        "Debian/Ubuntu Linux": {
+          "x64": "https://cdn.posit.co/positron/dailies/deb/x86_64/Positron-2026.07.0-352-x64.deb",
+          "ARM": "https://cdn.posit.co/positron/dailies/deb/arm64/Positron-2026.07.0-352-arm64.deb"
+        },
+        "Red Hat Linux": {
+          "x64": "https://cdn.posit.co/positron/dailies/rpm/x86_64/Positron-2026.07.0-352-x64.rpm",
+          "ARM": "https://cdn.posit.co/positron/dailies/rpm/arm64/Positron-2026.07.0-352-arm64.rpm"
+        }
+      }
+    },
     {
       "version": "2026.07.0-327",
       "release_url": "https://github.com/posit-dev/positron/releases/tag/2026.07.0-327",
@@ -753,32 +779,6 @@
         "Red Hat Linux": {
           "x64": "https://cdn.posit.co/positron/dailies/rpm/x86_64/Positron-2026.06.0-113-x64.rpm",
           "ARM": "https://cdn.posit.co/positron/dailies/rpm/arm64/Positron-2026.06.0-113-arm64.rpm"
-        }
-      }
-    },
-    {
-      "version": "2026.06.0-89",
-      "release_url": "https://github.com/posit-dev/positron/releases/tag/2026.06.0-89",
-      "downloads": {
-        "Windows (System)": {
-          "x64": "https://cdn.posit.co/positron/dailies/win/x86_64/Positron-2026.06.0-89-Setup-x64.exe",
-          "ARM": "https://cdn.posit.co/positron/dailies/win/arm64/Positron-2026.06.0-89-Setup-arm64.exe"
-        },
-        "Windows (User)": {
-          "x64": "https://cdn.posit.co/positron/dailies/win/x86_64/Positron-2026.06.0-89-UserSetup-x64.exe",
-          "ARM": "https://cdn.posit.co/positron/dailies/win/arm64/Positron-2026.06.0-89-UserSetup-arm64.exe"
-        },
-        "MacOS": {
-          "x64": "https://cdn.posit.co/positron/dailies/mac/x64/Positron-2026.06.0-89-x64.dmg",
-          "ARM": "https://cdn.posit.co/positron/dailies/mac/arm64/Positron-2026.06.0-89-arm64.dmg"
-        },
-        "Debian/Ubuntu Linux": {
-          "x64": "https://cdn.posit.co/positron/dailies/deb/x86_64/Positron-2026.06.0-89-x64.deb",
-          "ARM": "https://cdn.posit.co/positron/dailies/deb/arm64/Positron-2026.06.0-89-arm64.deb"
-        },
-        "Red Hat Linux": {
-          "x64": "https://cdn.posit.co/positron/dailies/rpm/x86_64/Positron-2026.06.0-89-x64.rpm",
-          "ARM": "https://cdn.posit.co/positron/dailies/rpm/arm64/Positron-2026.06.0-89-arm64.rpm"
         }
       }
     }
